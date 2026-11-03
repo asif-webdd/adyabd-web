@@ -1,0 +1,228 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Appearance CSS variables — fallbacks match seeded defaults so the page
+   looks correct before the API response arrives (useAppearance.js overrides
+   these at runtime after fetching /api/v1/appearance/public).
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Primary colour + computed variants */
+  --color-primary:           #006A4E;
+  --color-primary-rgb:       0 106 78;
+  --color-primary-dark:      #004f3a;
+  --color-primary-dark-rgb:  0 79 58;
+  --color-primary-light:     #d6ece5;
+  --color-primary-light-rgb: 214 236 229;
+
+  /* Accent colour + computed variants */
+  --color-accent:            #E63946;
+  --color-accent-rgb:        230 57 70;
+  --color-accent-dark:       #c0222f;
+  --color-accent-dark-rgb:   192 34 47;
+  --color-accent-light:      #fce8ea;
+  --color-accent-light-rgb:  252 232 234;
+
+  /* Surface / text */
+  --color-bg:                #F8FAF9;
+  --color-navbar:            #ffffff;
+  --color-footer:            #1a1a2e;
+  --color-text:              #1a1a1a;
+
+  /* Typography */
+  --font-body:               'Hind Siliguri', sans-serif;
+  --font-display:            'Inter', 'Hind Siliguri', sans-serif;
+  --font-size-base:          15px;
+
+  /* Shape */
+  --border-radius:           12px;
+  --border-radius-sm:        8px;
+  --border-radius-lg:        20px;
+
+  /* Hero */
+  --hero-height:             420px;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Material Symbols ───────────────────────────────────────────────────── */
+.mi {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+.mi-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.mi-sm { font-size: 18px; }
+.mi-lg { font-size: 32px; }
+.mi-xl { font-size: 48px; }
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    font-family:     var(--font-body);
+    font-size:       var(--font-size-base);
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-bg);
+    color:            var(--color-text);
+  }
+}
+
+/* ── Components ─────────────────────────────────────────────────────────── */
+@layer components {
+
+  /* Buttons */
+  .btn-primary {
+    background-color: var(--color-accent);
+    border-radius: var(--border-radius);
+    @apply text-white font-display font-semibold px-5 py-2.5 transition-all duration-200 active:scale-95 inline-flex items-center gap-2 cursor-pointer;
+  }
+  .btn-primary:hover { background-color: var(--color-accent-dark); }
+
+  .btn-secondary {
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    @apply text-white font-display font-semibold px-5 py-2.5 transition-all duration-200 active:scale-95 inline-flex items-center gap-2 cursor-pointer;
+  }
+  .btn-secondary:hover { background-color: var(--color-primary-dark); }
+
+  .btn-outline {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    border-radius: var(--border-radius);
+    @apply border-2 font-display font-semibold px-5 py-2.5 transition-all duration-200 active:scale-95 inline-flex items-center gap-2 cursor-pointer;
+  }
+  .btn-outline:hover { background-color: var(--color-primary); color: #fff; }
+
+  .btn-ghost {
+    border-radius: var(--border-radius);
+    @apply bg-white/15 border border-white/30 text-white font-display font-semibold px-5 py-2.5 transition-all duration-200 active:scale-95 inline-flex items-center gap-2 cursor-pointer;
+  }
+  .btn-ghost:hover { @apply bg-white/25; }
+
+  /* Cards */
+  .product-card {
+    border-radius: var(--border-radius);
+    @apply bg-white shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden cursor-pointer hover:-translate-y-1;
+  }
+  .card {
+    border-radius: var(--border-radius-lg);
+    @apply bg-white shadow-card p-5;
+  }
+
+  /* Badges */
+  .badge {
+    border-radius: calc(var(--border-radius) - 4px);
+    @apply text-xs font-display font-bold px-2.5 py-1;
+  }
+  .badge-primary {
+    background-color: var(--color-primary);
+    @apply text-white;
+  }
+  .badge-accent {
+    background-color: var(--color-accent);
+    @apply text-white;
+  }
+  .badge-primary-light {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+  }
+  .badge-accent-light {
+    background-color: var(--color-accent-light);
+    color: var(--color-accent-dark);
+  }
+
+  /* Section title */
+  .section-title {
+    @apply font-display font-bold text-2xl md:text-3xl text-gray-900;
+  }
+
+  /* Inputs */
+  .input-field {
+    border-radius: var(--border-radius);
+    font-family: var(--font-body);
+    @apply w-full border-2 border-gray-200 outline-none transition-colors bg-white px-4 py-3 text-sm;
+  }
+  .input-field:focus { border-color: var(--color-primary); }
+
+  /* ── Utility hover/colour helpers ────────────────────────────────────── */
+
+  /* bg hover */
+  .hover\:bg-primary-dark:hover   { background-color: var(--color-primary-dark) !important; }
+  .hover\:bg-primary-light:hover  { background-color: var(--color-primary-light) !important; }
+  .hover\:bg-accent-dark:hover    { background-color: var(--color-accent-dark) !important; }
+  .hover\:bg-accent-light:hover   { background-color: var(--color-accent-light) !important; }
+
+  /* text hover */
+  .hover\:text-primary:hover      { color: var(--color-primary) !important; }
+  .hover\:text-primary-dark:hover { color: var(--color-primary-dark) !important; }
+  .hover\:text-accent:hover       { color: var(--color-accent) !important; }
+  .hover\:text-accent-dark:hover  { color: var(--color-accent-dark) !important; }
+
+  /* border hover */
+  .hover\:border-primary:hover    { border-color: var(--color-primary) !important; }
+  .hover\:border-accent:hover     { border-color: var(--color-accent) !important; }
+
+  /* focus ring */
+  .focus\:ring-primary:focus      { --tw-ring-color: var(--color-primary); }
+  .focus\:border-primary:focus    { border-color: var(--color-primary) !important; }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 3px; }
+
+/* ── Navbar style variants (set via data-navbar on <html>) ──────────────── */
+[data-navbar='colored'] header {
+  background-color: var(--color-primary) !important;
+  color: #ffffff;
+}
+[data-navbar='colored'] header a,
+[data-navbar='colored'] header button { color: #ffffff; }
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes ping-slow {
+  0%, 100% { transform: scale(1);   opacity: 1;   }
+  50%       { transform: scale(1.3); opacity: 0.7; }
+}
+.animate-ping-slow { animation: ping-slow 2s ease-in-out infinite; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeinup { animation: fadeInUp 0.5s ease forwards; }
+
+/* ── Vue transitions ────────────────────────────────────────────────────── */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from,   .fade-leave-to     { opacity: 0; }
+
+.slide-left-enter-active, .slide-left-leave-active { transition: transform 0.3s ease; }
+.slide-left-enter-from,   .slide-left-leave-to     { transform: translateX(-100%); }
+
+.toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
+.toast-enter-from,   .toast-leave-to     { opacity: 0; transform: translateX(100%); }
+
+.slide-down-enter-active, .slide-down-leave-active { transition: all 0.3s ease; }
+.slide-down-enter-from,   .slide-down-leave-to     { opacity: 0; transform: translateY(-100%); }
+
+.dropdown-enter-active, .dropdown-leave-active { transition: all 0.15s ease; }
+.dropdown-enter-from,   .dropdown-leave-to     { opacity: 0; transform: translateY(-6px); }
+
+
+/* Hidden-scrollbar horizontal sliders (used by header categories, home category slider, product tabs) */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.snap-slider { scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.snap-slider > * { scroll-snap-align: start; }

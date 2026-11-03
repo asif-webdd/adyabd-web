@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
+
+class ProductImage extends Model
+{
+    protected $fillable = ['product_id', 'image_path', 'sort_order', 'is_primary'];
+
+    protected $casts = ['is_primary' => 'boolean'];
+
+    protected $appends = ['full_url_image'];
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function getFullUrlImageAttribute(): string
+    {
+        if (Str::startsWith($this->image_path, 'http')) {
+            return $this->image_path;
+        }
+        return asset("storage/$this->image_path");
+    }
+}

@@ -1,0 +1,28 @@
+@keyframes sk-shimmer {
+    0% {
+        background-position: -600px 0;
+    }
+    100% {
+        background-position: 600px 0;
+    }
+}
+
+.sk {
+    display: block;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 600px 100%;
+    animation: sk-shimmer 1.4s infinite linear;
+    border-radius: 6px;
+}
+
+.sk-round {
+    border-radius: 9999px !important;
+}
+
+.sk-pill {
+    border-radius: 9999px !important;
+}
+
+.sk-rect {
+    border-radius: 4px !important;
+}

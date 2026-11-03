@@ -1,0 +1,24 @@
+<?php
+require __DIR__.'/../vendor/autoload.php';
+$app = require __DIR__.'/../bootstrap/app.php';
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$ok=0;$bad=0;
+$t=function($n,$c)use(&$ok,&$bad){echo ($c?'PASS ':'FAIL ').$n."\n";$c?$ok++:$bad++;};
+$call=function($uri){$r=app()->handle(Illuminate\Http\Request::create($uri,'GET',[],[],[],['HTTP_ACCEPT'=>'application/json']));return [$r->getStatusCode(),json_decode($r->getContent(),true)];};
+[$c,$d]=$call('/api/v1/pages/privacy'); $t('page privacy 200',$c===200);
+$d=$d['data']??$d; $t('empty content -> null',array_key_exists('content',$d) && $d['content']===null);
+App\Models\SitePage::where('slug','privacy')->update(['content'=>'<p onclick="x()">Hi</p><script>alert(1)</script><a href="javascript:evil()">a</a>']);
+[$c,$d]=$call('/api/v1/pages/privacy'); $d=$d['data']??$d;
+$t('script stripped',!str_contains($d['content'],'<script')&&!str_contains($d['content'],'onclick')&&!str_contains($d['content'],'javascript:'));
+$t('keeps <p>',str_contains($d['content'],'<p'));
+[$c,$d]=$call('/api/v1/pages/nope'); $t('unknown slug -> 200 with null content (storefront keeps default)',$c===200 && array_key_exists('content',$d['data']??$d) && ($d['data']??$d)['content']===null);
+[$c,$d]=$call('/api/v1/faqs'); $d=$d['data']??$d; $t('faqs list',$c===200&&count($d)>=4);
+App\Models\Faq::first()->update(['is_active'=>false]);
+[$c,$d2]=$call('/api/v1/faqs'); $d2=$d2['data']??$d2; $t('inactive faq hidden',count($d2)===count($d)-1);
+setting('x');
+App\Models\Setting::set('shop_address','Dhaka'); App\Models\Setting::set('office_hours',"Sat | 9-9\nFri | বন্ধ"); App\Models\Setting::set('whatsapp_number','+8801700000000'); \Cache::flush();
+[$c,$d]=$call('/api/v1/appearance/public'); $d=$d['data']??$d;
+$t('footer address present',!empty($d['footer_address']));
+$t('office_hours parsed',($d['office_hours'][1]['time']??'')==='বন্ধ' && count($d['office_hours'])===2);
+$t('whatsapp exposed',($d['whatsapp_number']??'')==='+8801700000000');
+echo "PASS=$ok FAIL=$bad\n";
