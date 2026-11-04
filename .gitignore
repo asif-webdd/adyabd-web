@@ -1,17 +1,21 @@
-# secrets & local data
+# ---- secrets & local data (never commit) ----
 .env
 .env.*
 !.env.example
 !.env.production.example
-backend/database/database.sqlite
-backend/storage/app/public/*
-!backend/storage/app/public/.gitignore
-backend/storage/logs/*
-backend/storage/framework/cache/*
-backend/storage/framework/sessions/*
-backend/storage/framework/views/*
+*.log
+.DS_Store
+# ---- backend ----
 backend/vendor/
+backend/database/database.sqlite
+# (storage/ is handled by Laravel's own .gitignore files inside it, plus:)
+backend/storage/*.key
 backend/public/storage
+backend/public/build
+backend/public/hot
+backend/bootstrap/cache/*.php
+# ---- frontend ----
 frontend/node_modules/
 frontend/.nuxt/
 frontend/.output/
+frontend/dist/

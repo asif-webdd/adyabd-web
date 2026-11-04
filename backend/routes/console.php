@@ -75,6 +75,48 @@ Artisan::command('shop:setup', function () {
     }
 })->purpose('Create tables (and demo data on a fresh database) - used by setup.sh / setup.ps1');
 
+
+
+
+
+
+// backend/routes/console.php te 'Scheduled Tasks' comment er THIK AGE ei block ta boshan
+
+Artisan::command('shop:prod-setup', function () {
+    // PRODUCTION-SAFE: runs after every deploy. Applies new migrations and creates the bare essentials ONCE
+    // (admin account, Passport client, default settings/templates). No demo products/users/orders, and it never
+    // overwrites settings the admin has already edited.
+    $this->call('migrate', ['--force' => true]);
+
+    // Passport: signing keys come from PASSPORT_PRIVATE_KEY / PASSPORT_PUBLIC_KEY env vars (a deploy disk is wiped
+    // on every release). Only fall back to creating key files when neither is configured.
+    if (!env('PASSPORT_PRIVATE_KEY') && !file_exists(storage_path('oauth-private.key'))) {
+        $this->call('passport:keys', ['--force' => true]);
+    }
+    $hasPersonal = \Illuminate\Support\Facades\DB::table('oauth_clients')->where('grant_types', 'like', '%personal_access%')->exists();
+    if (!$hasPersonal) {
+        $this->call('passport:client', ['--personal' => true, '--name' => 'Personal Access Client', '--provider' => 'users', '--no-interaction' => true]);
+    }
+
+    if (!\App\Models\AdminUser::query()->exists()) {
+        $this->call('db:seed', ['--class' => \Database\Seeders\AdminUserSeeder::class, '--force' => true]);
+    }
+    if (!\App\Models\Setting::query()->exists()) {
+        $this->call('db:seed', ['--class' => \Database\Seeders\SettingsSeeder::class, '--force' => true]);
+    }
+    if (!\App\Models\NotificationTemplate::query()->exists()) {
+        $this->call('db:seed', ['--class' => \Database\Seeders\NotificationTemplatesSeeder::class, '--force' => true]);
+    }
+    if (!\App\Models\AutoBlockRule::query()->exists()) {
+        $this->call('db:seed', ['--class' => \Database\Seeders\AutoBlockRulesSeeder::class, '--force' => true]);
+    }
+    $this->info('Production setup done.');
+})->purpose('Migrate + one-time essentials for a live server (no demo data)');
+
+
+
+
+
 // ─── Scheduled Tasks ────────────────────────────────────────
 
 Schedule::command('bazar:process-auto-blocks')->hourly();
