@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))->withRouting(
     commands: __DIR__ . '/../routes/console.php',
     health: '/up',
 )->withMiddleware(function (Middleware $middleware) {
+    // Behind the host's HTTPS proxy: trust X-Forwarded-* so Laravel sees https (needed for signed URLs, e.g. Livewire/Filament file uploads)
+    $middleware->trustProxies(at: '*');
+    
     $middleware->alias([
         'check.blocked' => CheckBlocked::class,
         'seller'        => \App\Http\Middleware\EnsureSeller::class,
