@@ -85,9 +85,24 @@ class ProductController extends Controller
         return $this->success($this->_featured());
     }
 
+    ##private function _featured()
+    ##{
+        ##return Product::where('is_active', true)->where('is_featured', true)->with([
+            ##'primaryImage',
+            ##'seller' => fn($q) => $q->select([
+                ##'id',
+                ##'shop_name',
+                ##'shop_name_bn',
+                ##'slug',
+                ##'logo'
+            ##])
+        ##])->whereHas('reviews', fn($query) => $query->where('is_approved', true))->withCount('reviews')->withAvg('reviews', 'rating')
+            ##->orderByDesc('created_at')->limit(request('limit') ?? 10)->get();
+    ##}
+
     private function _featured()
     {
-        return Product::where('is_active', true)->where('is_featured', true)->with([
+        $with = [
             'primaryImage',
             'seller' => fn($q) => $q->select([
                 'id',
@@ -96,8 +111,20 @@ class ProductController extends Controller
                 'slug',
                 'logo'
             ])
-        ])->whereHas('reviews', fn($query) => $query->where('is_approved', true))->withCount('reviews')->withAvg('reviews', 'rating')
-            ->orderByDesc('created_at')->limit(request('limit') ?? 10)->get();
+        ];
+
+        $limit = (int) (request('limit') ?? 10);
+
+        // "All products" tab: featured products first, then newest of the rest.
+        // No review requirement, so new stores with no reviews still show products.
+        return Product::where('is_active', true)
+            ->with($with)
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
     }
 
     public function trending(): JsonResponse
