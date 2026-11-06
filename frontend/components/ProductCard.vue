@@ -218,7 +218,7 @@ import { ref, computed } from 'vue'
 import { useCartStore }      from '~/stores/cart'
 import { useWishlistStore }  from '~/stores/wishlist'
 import { useAuthStore }      from '~/stores/auth'
-import { useAuthPopupStore } from '~/stores/authPopup'
+import { useAuthPopupStore } from '~/stores/AuthPopup'
 
 const props = defineProps({
   product:   { type: Object,  required: true },

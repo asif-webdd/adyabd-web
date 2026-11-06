@@ -242,7 +242,7 @@ const { tr } = useLang()
 import { useProductsStore }    from '~/stores/products'
 import { useLandingPageStore } from '~/stores/LandingPage'
 
-import SkHeroBanner     from '~/components/Skeletons/SkHeroBanner.vue'
+import SkHeroBanner     from '~/components/Skeletons/Skherobanner.vue'
 import SkTrustBadges    from '~/components/Skeletons/SkTrustBadges.vue'
 import SkCategoryGrid   from '~/components/Skeletons/SkCategoryGrid.vue'
 import SkFlashSale      from '~/components/Skeletons/SkFlashSale.vue'

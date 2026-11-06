@@ -181,7 +181,7 @@
 const { tr } = useLang()
 import { ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
-import { useAuthPopupStore } from '~/stores/authPopup'
+import { useAuthPopupStore } from '~/stores/AuthPopup'
 
 const authStore = useAuthStore()
 const popup     = useAuthPopupStore()
