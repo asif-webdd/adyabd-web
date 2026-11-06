@@ -406,6 +406,7 @@ export default {
   "সব ক্যাটাগরি": "All categories",
   "সব টিকেট": "All tickets",
   "সব দেখুন": "View all",
+  "এখনো কোনো ক্যাটাগরি নেই": "No categories yet",
   "সব পড়া হয়েছে": "All read",
   "সব পড়া হিসেবে চিহ্নিত করুন": "Mark all as read",
   "সব পণ্যের রিভিউ দেওয়া হয়েছে!": "All products have been reviewed!",

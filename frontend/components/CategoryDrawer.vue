@@ -21,7 +21,11 @@
         <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
           <span class="mi">person</span>
         </div>
-        <div>
+        <div v-if="authStore.isLoggedIn">
+          <NuxtLink to="/account" @click="$emit('close')" class="font-bengali font-semibold text-gray-800 text-sm hover:text-primary">{{ authStore.userName || tr('আমার অ্যাকাউন্ট') }}</NuxtLink>
+          <p class="font-bengali text-xs text-gray-500">{{ authStore.userPhone || authStore.userEmail }}</p>
+        </div>
+        <div v-else>
           <NuxtLink to="/auth/login" @click="$emit('close')" class="font-bengali font-semibold text-gray-800 text-sm hover:text-primary">{{ tr('লগইন করুন') }}</NuxtLink>
           <p class="font-bengali text-xs text-gray-500">{{ tr('অ্যাকাউন্ট না থাকলে') }} <NuxtLink to="/auth/login" @click="$emit('close')" class="text-primary underline">{{ tr('নিবন্ধন') }}</NuxtLink></p>
         </div>
@@ -39,8 +43,9 @@
       <!-- Categories -->
       <div class="flex-1 overflow-y-auto p-3">
         <p class="font-display font-bold text-xs text-gray-400 uppercase tracking-wide mb-2 px-2">{{ tr('সকল ক্যাটাগরি') }}</p>
+        <p v-if="!categories.length" class="text-xs text-gray-400 font-bengali px-3 py-2">{{ tr('এখনো কোনো ক্যাটাগরি নেই') }}</p>
         <div v-for="cat in categories" :key="cat.slug">
-          <button @click="toggleCat(cat.slug)"
+          <button v-if="cat.subs.length" type="button" @click="toggleCat(cat.slug)"
             class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors">
             <div class="w-9 h-9 rounded-lg flex items-center justify-center" :class="cat.bg">
               <span class="mi" :class="cat.color">{{ cat.icon }}</span>
@@ -48,7 +53,15 @@
             <span class="flex-1 font-bengali font-medium text-gray-800 text-sm text-left">{{ cat.name }}</span>
             <span class="mi mi-sm text-gray-400 transition-transform" :class="openCat === cat.slug ? 'rotate-90' : ''">chevron_right</span>
           </button>
-          <div v-if="openCat === cat.slug" class="ml-12 mb-1 space-y-0.5">
+          <NuxtLink v-else :to="cat.href" @click="$emit('close')"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center" :class="cat.bg">
+              <span class="mi" :class="cat.color">{{ cat.icon }}</span>
+            </div>
+            <span class="flex-1 font-bengali font-medium text-gray-800 text-sm text-left">{{ cat.name }}</span>
+          </NuxtLink>
+          <div v-if="cat.subs.length && openCat === cat.slug" class="ml-12 mb-1 space-y-0.5">
+            <NuxtLink :to="cat.href" @click="$emit('close')" class="flex items-center gap-1.5 font-bengali text-sm text-primary font-medium py-1.5 px-3 rounded-lg hover:bg-primary/5">{{ tr('সব দেখুন') }}</NuxtLink>
             <NuxtLink v-for="sub in cat.subs" :key="sub.href" :to="sub.href" @click="$emit('close')"
               class="flex items-center gap-1.5 font-bengali text-sm text-gray-600 hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-colors">
               <span class="mi mi-sm">chevron_right</span> {{ sub.label }}
@@ -70,7 +83,10 @@
 </template>
 
 <script setup>
-const { tr } = useLang()
+import { useLandingPageStore } from '~/stores/LandingPage'
+import { useAuthStore } from '~/stores/auth'
+const { tr, isEn } = useLang()
+const authStore = useAuthStore()
 defineProps({ isOpen: Boolean })
 defineEmits(['close'])
 
@@ -86,16 +102,28 @@ const quickLinks = [
   { href: '/support', icon: 'support_agent', label: 'সাপোর্ট' },
 ]
 
-const categories = [
-  { name: 'ইলেকট্রনিক্স', slug: 'electronics', icon: 'devices', bg: 'bg-blue-50', color: 'text-blue-600', subs: [{ label: 'মোবাইল ও ট্যাব', href: '/category/mobile' }, { label: 'ল্যাপটপ', href: '/category/laptop' }, { label: 'স্মার্টওয়াচ', href: '/category/smartwatch' }] },
-  { name: 'ফ্যাশন', slug: 'fashion', icon: 'checkroom', bg: 'bg-pink-50', color: 'text-pink-600', subs: [{ label: 'মহিলাদের পোশাক', href: '/category/womens' }, { label: 'পুরুষদের পোশাক', href: '/category/mens' }, { label: 'জুতা', href: '/category/shoes' }] },
-  { name: 'গৃহস্থালি', slug: 'home', icon: 'home', bg: 'bg-amber-50', color: 'text-amber-600', subs: [{ label: 'রান্নাঘর', href: '/category/kitchen' }, { label: 'ফার্নিচার', href: '/category/furniture' }] },
-  { name: 'সৌন্দর্য', slug: 'beauty', icon: 'spa', bg: 'bg-rose-50', color: 'text-rose-600', subs: [{ label: 'স্কিনকেয়ার', href: '/category/skincare' }, { label: 'হেয়ারকেয়ার', href: '/category/haircare' }] },
-  { name: 'বই ও শিক্ষা', slug: 'books', icon: 'menu_book', bg: 'bg-violet-50', color: 'text-violet-600', subs: [{ label: 'শিক্ষামূলক বই', href: '/category/textbooks' }, { label: 'উপন্যাস', href: '/category/novels' }] },
-  { name: 'শিশু পণ্য', slug: 'baby', icon: 'child_care', bg: 'bg-sky-50', color: 'text-sky-600', subs: [{ label: 'শিশুর পোশাক', href: '/category/baby-clothes' }, { label: 'খেলনা', href: '/category/toys' }] },
-  { name: 'খেলাধুলা', slug: 'sports', icon: 'sports_soccer', bg: 'bg-lime-50', color: 'text-lime-700', subs: [{ label: 'ক্রিকেট', href: '/category/cricket' }, { label: 'ফুটবল', href: '/category/football' }] },
-  { name: 'কৃষি পণ্য', slug: 'agriculture', icon: 'grass', bg: 'bg-teal-50', color: 'text-teal-600', subs: [{ label: 'সার ও বীজ', href: '/category/seeds' }, { label: 'কৃষি সরঞ্জাম', href: '/category/tools' }] },
+// Categories come from the admin panel (same data as the desktop menu), not hard-coded
+const landingStore = useLandingPageStore()
+const palette = [
+  { bg: 'bg-blue-50',   color: 'text-blue-600' },
+  { bg: 'bg-pink-50',   color: 'text-pink-600' },
+  { bg: 'bg-amber-50',  color: 'text-amber-600' },
+  { bg: 'bg-rose-50',   color: 'text-rose-600' },
+  { bg: 'bg-violet-50', color: 'text-violet-600' },
+  { bg: 'bg-sky-50',    color: 'text-sky-600' },
+  { bg: 'bg-lime-50',   color: 'text-lime-700' },
+  { bg: 'bg-teal-50',   color: 'text-teal-600' },
 ]
+const _label = (c) => (isEn.value ? (c.name || c.name_bn) : (c.name_bn || c.name))
+const categories = computed(() => (landingStore.categories || []).map((c, i) => ({
+  name: _label(c),
+  slug: c.slug,
+  href: `/category/${c.slug}`,
+  icon: c.icon || 'category',
+  bg: palette[i % palette.length].bg,
+  color: palette[i % palette.length].color,
+  subs: (c.children || []).map(s => ({ label: _label(s), href: `/category/${s.slug}` })),
+})))
 
 const bottomLinks = [
   { href: '/seller/register', icon: 'storefront', label: 'সেলার হন' },
