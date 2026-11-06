@@ -36,7 +36,20 @@ return [
             'throw' => false,
         ],
 
-        'public' => [
+        // Uploaded files (logos, product images …). On a host that wipes the disk on every deploy (FlyNode),
+        // set AWS_BUCKET & co. and this disk transparently becomes Cloudflare R2 (S3 API). Without AWS_BUCKET it is
+        // the normal local storage/app/public folder. NOTE: no 'visibility' key for R2 – R2 rejects public ACLs.
+        'public' => env('AWS_BUCKET') ? [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
+            'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
+            'throw' => false,
+        ] : [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',

@@ -10,6 +10,31 @@ if (!function_exists('setting')) {
     }
 }
 
+if (!function_exists('uploads_on_r2')) {
+    /** True when the "public" disk is Cloudflare R2 / S3 instead of the local storage folder. */
+    function uploads_on_r2(): bool
+    {
+        return config('filesystems.disks.public.driver') === 's3';
+    }
+}
+
+if (!function_exists('storage_url')) {
+    /**
+     * Public URL of an uploaded file. Works for the local disk (/storage/…), for Cloudflare R2 (AWS_URL/…)
+     * and for values that already are full http(s) URLs.
+     */
+    function storage_url(?string $path): ?string
+    {
+        if ($path === null || $path === '') return null;
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, 'data:')) return $path;
+        $path = ltrim($path, '/');
+        if (uploads_on_r2()) {
+            return rtrim((string) config('filesystems.disks.public.url'), '/') . '/' . $path;
+        }
+        return asset('storage/' . $path);
+    }
+}
+
 if (!function_exists('shop_logo_src')) {
     /**
      * Store logo (Admin → Appearance → Store Logo) as something an <img> can show on a printed
@@ -25,9 +50,11 @@ if (!function_exists('shop_logo_src')) {
         if ($path === '') return null;
         if (str_starts_with($path, 'http')) return $path;
 
+        if (uploads_on_r2()) return storage_url($path);
+
         $file = storage_path('app/public/' . ltrim($path, '/'));
         if (!is_file($file) || filesize($file) > 3 * 1024 * 1024) {
-            return asset('storage/' . ltrim($path, '/'));
+            return storage_url($path);
         }
         $mime = match (strtolower(pathinfo($file, PATHINFO_EXTENSION))) {
             'svg' => 'image/svg+xml', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif',

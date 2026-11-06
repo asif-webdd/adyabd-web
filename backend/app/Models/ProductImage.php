@@ -24,6 +24,6 @@ class ProductImage extends Model
         if (Str::startsWith($this->image_path, 'http')) {
             return $this->image_path;
         }
-        return asset("storage/$this->image_path");
+        return storage_url($this->image_path);
     }
 }

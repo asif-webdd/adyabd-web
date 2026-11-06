@@ -62,7 +62,7 @@ class SellerPublicApiController extends Controller
                 'shop_slug'    => $seller->slug,
                 'description'  => $seller->description,
                 'logo'         => $seller->logo ? $seller->logo_url : null,
-                'banner'       => $seller->banner ? (str_starts_with($seller->banner, 'http') ? $seller->banner : asset('storage/' . $seller->banner)) : null,
+                'banner'       => $seller->banner ? (str_starts_with($seller->banner, 'http') ? $seller->banner : storage_url($seller->banner)) : null,
                 'address'      => $seller->address,
                 'is_verified'  => $seller->is_verified,
                 'is_active'    => $seller->is_active,
@@ -218,7 +218,7 @@ class SellerPublicApiController extends Controller
         $discount      = $originalPrice > $price ? (int) round((($originalPrice - $price) / $originalPrice) * 100) : 0;
 
         $imagePath = $product->primaryImage?->image_path;
-        $image     = $imagePath ? (str_starts_with($imagePath, 'http') ? $imagePath : asset('storage/' . $imagePath)) : asset('images/product-placeholder.png');
+        $image     = $imagePath ? (str_starts_with($imagePath, 'http') ? $imagePath : storage_url($imagePath)) : asset('images/product-placeholder.png');
 
         //dd($product->toArray(), $product->rating);
         return [

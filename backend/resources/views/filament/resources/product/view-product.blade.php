@@ -15,7 +15,7 @@
     $images       = $record->images()->orderBy('sort_order')->get();
     $primaryImg   = $record->primaryImage ?? $images->first();
     $imgUrl       = $primaryImg
-        ? (str_starts_with($primaryImg->image_path, 'http') ? $primaryImg->image_path : asset('storage/' . $primaryImg->image_path))
+        ? (str_starts_with($primaryImg->image_path, 'http') ? $primaryImg->image_path : storage_url($primaryImg->image_path))
         : 'https://placehold.co/600x600/0f172a/334155?text=No+Image';
 
     $threshold  = $record->low_stock_threshold ?? 5;
@@ -45,7 +45,7 @@
             </div>
             <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
                 @foreach ($images->take(6) as $img)
-                    @php $u = str_starts_with($img->image_path,'http') ? $img->image_path : asset('storage/'.$img->image_path); @endphp
+                    @php $u = str_starts_with($img->image_path,'http') ? $img->image_path : storage_url($img->image_path); @endphp
                     <button onclick="document.getElementById('vp-hero').src='{{ $u }}'"
                             style="width:60px;height:60px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,0.1);cursor:pointer;background:none;padding:0;flex-shrink:0;transition:border-color .15s;"
                             onmouseover="this.style.borderColor='#6366f1'"

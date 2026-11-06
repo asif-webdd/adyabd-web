@@ -74,10 +74,10 @@ class BannerController extends Controller
         // scope: type = 'banner'
         return Banner::active()->banners()->orderBy('sort_order')->get()->map(function ($item) {
             if (!Str::startsWith($item->mobile_image, 'http')){
-                $item->mobile_image = asset("storage/{$item->mobile_image}");
+                $item->mobile_image = storage_url($item->mobile_image);
             }
             if (!Str::startsWith($item->image, 'http')){
-                $item->image = asset("storage/{$item->image}");
+                $item->image = storage_url($item->image);
             }
             return $item;
         });

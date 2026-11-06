@@ -79,7 +79,6 @@ class AppearancePage extends Page
                                 ->label('Store Logo')
                                 ->image()
                                 ->disk('public')
-                                ->visibility('public')
                                 ->directory('settings')
                                 ->maxSize(4096)
                                 ->imagePreviewHeight('80')
@@ -89,7 +88,6 @@ class AppearancePage extends Page
                                 ->label('Favicon')
                                 ->image()
                                 ->disk('public')
-                                ->visibility('public')
                                 ->directory('settings')
                                 ->maxSize(1024)
                                 ->imagePreviewHeight('64')
@@ -540,7 +538,7 @@ class AppearancePage extends Page
                                 ->placeholder('https://play.google.com/...')
                                 ->helperText('Leave blank to hide the Google Play button'),
 
-                            FileUpload::make('app_banner_image')->disk('public')->visibility('public')
+                            FileUpload::make('app_banner_image')->disk('public')
                                 ->label('Banner Image')
                                 ->image()
                                 ->directory('settings')

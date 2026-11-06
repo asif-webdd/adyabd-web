@@ -109,7 +109,7 @@ class ProductResource extends Resource
 
             Section::make('Images')->schema([
                 Repeater::make('images')->relationship('images')->schema([
-                    FileUpload::make('image_path')->label('Image')->image()->disk('public')->visibility('public')->directory('products')->imageEditor()->required()->columnSpanFull(),
+                    FileUpload::make('image_path')->label('Image')->image()->disk('public')->directory('products')->imageEditor()->required()->columnSpanFull(),
                     Toggle::make('is_primary')->label('Primary Image')->default(false)->helperText('If none is marked primary, the first image is used.'),
                 ])->columns(2)->addActionLabel('Add Image')->reorderableWithButtons()->collapsible()->maxItems(8),
             ]),

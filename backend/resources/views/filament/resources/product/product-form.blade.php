@@ -246,7 +246,7 @@
                 <p class="pf-hint" style="margin-bottom:10px;">Existing images — check to delete</p>
                 <div class="pf-img-grid">
                     @foreach ($record->images as $img)
-                        @php $url = str_starts_with($img->image_path,'http') ? $img->image_path : asset('storage/'.$img->image_path); @endphp
+                        @php $url = str_starts_with($img->image_path,'http') ? $img->image_path : storage_url($img->image_path); @endphp
                         <div class="pf-img-thumb" style="{{ $img->is_primary ? 'border-color:#6366f1;' : '' }}">
                             <img src="{{ $url }}" alt="">
                             <label style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;gap:4px;padding:4px;cursor:pointer;font-size:11px;color:#f87171;">

@@ -32,8 +32,19 @@ class AppServiceProvider extends ServiceProvider
         // Make public-disk file URLs follow the host the browser actually used (localhost vs 127.0.0.1,
         // custom domain, port…). A hard-coded APP_URL that differs from the admin's address made Filament's
         // file-upload previews (logo / favicon) hang on "Loading" because the browser blocked the cross-origin fetch.
-        if (!app()->runningInConsole() && ($origin = request()->getSchemeAndHttpHost())) {
+        
+        // (Only for the local disk. When uploads live on Cloudflare R2 the disk URL is AWS_URL and must stay as is.)
+        if (!uploads_on_r2() && !app()->runningInConsole() && ($origin = request()->getSchemeAndHttpHost())) {
             config(['filesystems.disks.public.url' => rtrim($origin, '/') . '/storage']);
+        }
+
+        if (uploads_on_r2()) {
+            // Livewire's temporary uploads must stay on the server's local disk (the default disk is R2 and
+            // Livewire would then try to upload straight from the browser to the bucket, which needs extra CORS setup).
+            config(['livewire.temporary_file_upload.disk' => 'local']);
+            // R2 rejects public ACLs: Filament must store with "private" (no x-amz-acl: public-read). Files are still
+            // public to visitors through the bucket's public URL (AWS_URL).
+            \Filament\Forms\Components\FileUpload::configureUsing(fn(\Filament\Forms\Components\FileUpload $c) => $c->visibility('private'));
         }
 
         /*\Livewire\Livewire::component(

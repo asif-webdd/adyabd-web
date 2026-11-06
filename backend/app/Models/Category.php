@@ -46,6 +46,6 @@ class Category extends Model
 
     public function getImageUrlAttribute(): string
     {
-        return $this->image ? asset('storage/' . $this->image) : asset('images/category-placeholder.png');
+        return $this->image ? storage_url($this->image) : asset('images/category-placeholder.png');
     }
 }

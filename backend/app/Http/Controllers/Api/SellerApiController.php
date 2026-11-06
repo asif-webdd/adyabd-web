@@ -338,7 +338,7 @@ class SellerApiController extends Controller
             'shop_name' => $s->shop_name, 'shop_name_bn' => $s->shop_name_bn, 'slug' => $s->slug, 'description' => $s->description,
             'phone' => $s->phone, 'email' => $s->email, 'address' => $s->address,
             'bkash_number' => $s->bkash_number, 'bank_name' => $s->bank_name, 'bank_account' => $s->bank_account,
-            'logo' => $s->logo ? $s->logo_url : null, 'banner' => $s->banner ? (str_starts_with($s->banner, 'http') ? $s->banner : asset('storage/' . $s->banner)) : null,
+            'logo' => $s->logo ? $s->logo_url : null, 'banner' => $s->banner ? (str_starts_with($s->banner, 'http') ? $s->banner : storage_url($s->banner)) : null,
             'status' => $s->status, 'is_verified' => (bool) $s->is_verified,
         ];
     }

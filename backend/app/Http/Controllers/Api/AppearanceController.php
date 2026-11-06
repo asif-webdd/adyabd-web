@@ -34,7 +34,7 @@ class AppearanceController extends Controller
                 $path = (string) (collect(json_decode($path, true) ?: [])->first() ?? '');
                 if (!$path) return null;
             }
-            return str_starts_with($path, 'http') ? $path : asset('storage/' . $path);
+            return str_starts_with($path, 'http') ? $path : storage_url($path);
         };
 
         // ── Colours ──────────────────────────────────────────────────────────

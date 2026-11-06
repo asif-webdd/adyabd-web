@@ -50,8 +50,8 @@ class SellerResource extends Resource
                 TextInput::make('phone')->required(),
                 TextInput::make('email')->email(),
                 Textarea::make('description')->rows(3),
-                FileUpload::make('logo')->image()->disk('public')->visibility('public')->directory('sellers/logos'),
-                FileUpload::make('banner')->label('Cover image')->image()->disk('public')->visibility('public')->directory('sellers/banners'),
+                FileUpload::make('logo')->image()->disk('public')->directory('sellers/logos'),
+                FileUpload::make('banner')->label('Cover image')->image()->disk('public')->directory('sellers/banners'),
             ])->columns(2),
 
             Section::make('Financial Information')->schema([

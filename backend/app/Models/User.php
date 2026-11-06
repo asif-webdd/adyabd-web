@@ -157,7 +157,7 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): string
     {
-        return $this->avatar ? (str_starts_with($this->avatar, 'http') ? $this->avatar : asset('storage/' . $this->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=006A4E&color=fff';
+        return $this->avatar ? (str_starts_with($this->avatar, 'http') ? $this->avatar : storage_url($this->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=006A4E&color=fff';
     }
 
     public function activityLogs(): HasMany

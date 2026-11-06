@@ -84,7 +84,7 @@ class ReviewResource extends Resource
             Section::make('Attachments')->schema([
                 Placeholder::make('images_preview')->label('')->dehydrated(false)->content(fn($record) => new HtmlString(
                     collect(json_decode($record?->getRawOriginal('images') ?? '[]', true) ?? [])
-                        ->map(fn($path) => str_starts_with($path, 'http') ? $path : asset('storage/' . $path))
+                        ->map(fn($path) => str_starts_with($path, 'http') ? $path : storage_url($path))
                         ->map(fn($url) => '<a href="' . $url . '" target="_blank"><img src="' . $url . '" style="width:120px;height:120px;object-fit:cover;border-radius:8px;margin:4px;display:inline-block;" onerror="this.style.display=\'none\'" /></a>')
                         ->implode('')
                 )),
@@ -110,7 +110,7 @@ class ReviewResource extends Resource
 
             // Review excerpt
             TextColumn::make('review')->label('Review')->limit(60)->wrap()->description(fn($record) => $record->title ?? ''),
-            ViewColumn::make('images')->label('Photos')->view('filament.tables.columns.review-images')->getStateUsing(fn($record) => collect(json_decode($record?->getRawOriginal('images') ?? '[]', true) ?? [])->map(fn($path) => str_starts_with($path, 'http') ? $path : asset('storage/' . $path))->toArray()),
+            ViewColumn::make('images')->label('Photos')->view('filament.tables.columns.review-images')->getStateUsing(fn($record) => collect(json_decode($record?->getRawOriginal('images') ?? '[]', true) ?? [])->map(fn($path) => str_starts_with($path, 'http') ? $path : storage_url($path))->toArray()),
             IconColumn::make('is_approved')->label('Approved')->boolean(),
             IconColumn::make('is_verified')->label('Verified')->boolean()->getStateUsing(fn(Review $review)=> static::verifyProductHasPurchased($review))->trueIcon('heroicon-o-shield-check')->falseIcon('heroicon-o-shield-exclamation')->trueColor('success')->falseColor('warning')->tooltip(fn(Review $record): string => match (true) {
                 $record->order_id === null                                     => ' No linked order — review submitted without purchase',

@@ -74,7 +74,7 @@ class Review extends Model
     public function getImagesAttribute($value): array
     {
         $paths = json_decode($value, true) ?? [];
-        return array_map(fn($path) => str_starts_with($path, 'http') ? $path : asset('storage/' . $path), $paths);
+        return array_map(fn($path) => str_starts_with($path, 'http') ? $path : storage_url($path), $paths);
     }
 
     // ── Relationships ──────────────────────────────────────

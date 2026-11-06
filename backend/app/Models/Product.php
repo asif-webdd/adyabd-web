@@ -160,7 +160,7 @@ class Product extends Model
         if (Str::startsWith($img->image_path, 'http')) {
             return $img->image_path;
         }
-        return asset('storage/' . $img->image_path);
+        return storage_url($img->image_path);
     }
 
 

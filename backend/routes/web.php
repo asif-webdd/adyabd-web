@@ -33,6 +33,11 @@ Route::prefix("/customer/orders")->middleware('signed')->group(function (){
 // developer mode), which made every uploaded image/logo show as broken. When the symlink is missing,
 // this route serves the same files, so uploads work either way.
 Route::get('/storage/{path}', function (string $path) {
+    // Uploads live on Cloudflare R2: any old-style /storage/... link (e.g. built by the frontend) goes to the bucket.
+    if (uploads_on_r2()) {
+        return redirect()->away(storage_url($path), 302, ['Cache-Control' => 'public, max-age=3600']);
+    }
+
     $base = realpath(storage_path('app/public'));
     $file = $base ? realpath($base . DIRECTORY_SEPARATOR . $path) : false;
     abort_unless($file && str_starts_with($file, $base . DIRECTORY_SEPARATOR) && is_file($file), 404);
