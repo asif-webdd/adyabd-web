@@ -222,6 +222,10 @@
       <nav v-else class="cus-header-categories border-t border-gray-100 bg-gray-50/80">
         <div :class="[containerWidth, 'mx-auto px-4']">
           <div class="cus-header-categories flex gap-0.5 overflow-x-auto scrollbar-hide py-1">
+              <NuxtLink to="/products" active-class="text-white bg-primary" class="whitespace-nowrap flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bengali font-medium text-gray-600 hover:bg-primary hover:text-white transition-colors shrink-0">
+                <span class="mi mi-sm">storefront</span>
+                {{ tr('সব পণ্য') }}
+            </NuxtLink>
             <NuxtLink v-for="cat in categories" :key="cat.slug" :to="`/category/${cat.slug}`" active-class="text-white bg-primary" class="whitespace-nowrap flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bengali font-medium text-gray-600 hover:bg-primary hover:text-white transition-colors shrink-0">
               <span class="mi mi-sm">{{ cat.icon }}</span>
               {{ cat.name_bn || cat.name }}

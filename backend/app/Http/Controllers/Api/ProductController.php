@@ -24,6 +24,11 @@ class ProductController extends Controller
             ->when($request->min_price, fn($q) => $q->where('price', '>=', $request->min_price))
             ->when($request->max_price, fn($q) => $q->where('price', '<=', $request->max_price))
             ->when($request->in_stock, fn($q) => $q->where('quantity', '>', 0))
+
+            // brands=1,2,3 (several brands) and rating=4 (4 stars & up)
+            ->when($request->brands, fn($q) => $q->whereIn('brand_id', array_filter(array_map('intval', explode(',', (string) $request->brands)))))
+            ->when($request->rating, fn($q) => $q->where('rating', '>=', (float) $request->rating))
+
             ->when($request->sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($request->sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
             ->when($request->sort === 'rating', fn($q) => $q->orderByDesc('rating'))
@@ -36,6 +41,23 @@ class ProductController extends Controller
         return $this->success($products);
     }
 
+
+    /**
+     * GET /products/filters: brands (with active product counts) for the shop-page sidebar.
+     */
+    public function filters(): JsonResponse
+    {
+        $brands = \App\Models\Brand::where('is_active', true)
+            ->withCount(['products' => fn($q) => $q->where('is_active', true)])
+            ->orderBy('sort_order')->orderBy('name')
+            ->get(['id', 'name', 'slug', 'logo'])
+            ->filter(fn($b) => $b->products_count > 0)
+            ->values();
+
+        return $this->success(['brands' => $brands]);
+    }
+
+    
     public function show(string $slug): JsonResponse
     {
         $product = Product::with([

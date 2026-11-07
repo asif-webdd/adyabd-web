@@ -75,7 +75,7 @@
         <NuxtLink v-for="link in bottomLinks" :key="link.href" :to="link.href" @click="$emit('close')"
           class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors">
           <span class="mi text-gray-500">{{ link.icon }}</span>
-          <span class="font-bengali text-sm text-gray-700">{{ link.label }}</span>
+          <span class="font-bengali text-sm text-gray-700">{{ tr(link.label) }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -126,6 +126,7 @@ const categories = computed(() => (landingStore.categories || []).map((c, i) => 
 })))
 
 const bottomLinks = [
+  { href: '/products', icon: 'shopping_bag', label: 'সব পণ্য' },
   { href: '/seller/register', icon: 'storefront', label: 'Become a seller' },
   //{ href: '/about', icon: 'info', label: 'আমাদের সম্পর্কে' },
   //{ href: '/blog', icon: 'article', label: 'ব্লগ' },
