@@ -8,7 +8,7 @@
       <!-- Header -->
       <div class="bg-primary p-4 flex items-center justify-between sticky top-0">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white font-bold font-display text-sm">বা</div>
+          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white font-bold font-display text-sm">A</div>
           <span class="text-white font-display font-bold text-lg">{{ tr('সব ক্যাটাগরি') }}</span>
         </div>
         <button @click="$emit('close')" class="text-white/80 hover:text-white">
@@ -94,12 +94,12 @@ const openCat = ref(null)
 const toggleCat = (slug) => { openCat.value = openCat.value === slug ? null : slug }
 
 const quickLinks = [
-  { href: '/account/orders', icon: 'inventory_2', label: 'অর্ডার' },
-  { href: '/wishlist', icon: 'favorite', label: 'উইশলিস্ট' },
-  { href: '/order/track', icon: 'location_searching', label: 'ট্র্যাক' },
-  { href: '/deals', icon: 'local_offer', label: 'অফার' },
-  { href: '/account/wallet', icon: 'account_balance_wallet', label: 'ওয়ালেট' },
-  { href: '/support', icon: 'support_agent', label: 'সাপোর্ট' },
+  { href: '/account/orders', icon: 'inventory_2', label: 'Order' },
+  { href: '/wishlist', icon: 'favorite', label: 'Wishlist' },
+  { href: '/order/track', icon: 'location_searching', label: 'Track' },
+  //{ href: '/deals', icon: 'local_offer', label: 'অফার' },
+  //{ href: '/account/wallet', icon: 'account_balance_wallet', label: 'ওয়ালেট' },
+  //{ href: '/support', icon: 'support_agent', label: 'সাপোর্ট' },
 ]
 
 // Categories come from the admin panel (same data as the desktop menu), not hard-coded
@@ -126,10 +126,10 @@ const categories = computed(() => (landingStore.categories || []).map((c, i) => 
 })))
 
 const bottomLinks = [
-  { href: '/seller/register', icon: 'storefront', label: 'সেলার হন' },
-  { href: '/about', icon: 'info', label: 'আমাদের সম্পর্কে' },
-  { href: '/blog', icon: 'article', label: 'ব্লগ' },
-  { href: '/support', icon: 'support_agent', label: 'সাপোর্ট' },
-  { href: '/policy/terms', icon: 'gavel', label: 'শর্তাবলী' },
+  { href: '/seller/register', icon: 'storefront', label: 'Become a seller' },
+  //{ href: '/about', icon: 'info', label: 'আমাদের সম্পর্কে' },
+  //{ href: '/blog', icon: 'article', label: 'ব্লগ' },
+  { href: '/support', icon: 'support_agent', label: 'Support' },
+  //{ href: '/policy/terms', icon: 'gavel', label: 'শর্তাবলী' },
 ]
 </script>

@@ -4,7 +4,7 @@
     <p class="font-bengali text-gray-500 mb-8">{{ tr('আমরা সবসময় আপনার সেবায় প্রস্তুত।') }}</p>
 
     <!-- Contact Options -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
       <div v-for="option in contactOptions" :key="option.title" class="bg-white rounded-2xl shadow-card p-6 text-center hover:shadow-card-hover transition-shadow">
         <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3" :class="option.bgClass">
           <span class="mi text-2xl" :class="option.color">{{ option.icon }}</span>
@@ -113,7 +113,7 @@
               <span class="mi text-2xl" :class="social.color">{{ social.icon }}</span>
               <div>
                 <p class="font-bengali font-semibold text-gray-800 text-sm">{{ social.name }}</p>
-                <p class="font-bengali text-xs text-gray-400">{{ social.handle }}</p>
+                <!--<p class="font-bengali text-xs text-gray-400">{{ social.handle }}</p>-->
               </div>
             </a>
           </div>

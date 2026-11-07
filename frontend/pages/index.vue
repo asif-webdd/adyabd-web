@@ -349,7 +349,7 @@ watch(activeTab, (key) => { if (key !== 'all') _loadTab(key) }, { immediate: tru
 
 const tabLoading  = computed(() => activeTab.value !== 'all' && (_tabCache[activeTab.value]?.loading ?? true))
 const tabProducts = computed(() => activeTab.value === 'all' ? landingStore.featured : (_tabCache[activeTab.value]?.items || []))
-const seeMoreLink = computed(() => activeTab.value === 'all' ? '/search' : `/category/${activeTab.value}`)
+const seeMoreLink = computed(() => activeTab.value === 'all' ? '/products' : `/category/${activeTab.value}`)
 
 const featuredProducts  = computed(() => landingStore.featured)
 const newProducts       = computed(() => landingStore.newArrivals)
@@ -361,10 +361,10 @@ const allPaymentMethods = [
   { key: 'show_bkash',      name: 'bKash',              icon: 'phone_iphone',   color: 'text-bkash'      },
   { key: 'show_nagad',      name: 'Nagad',              icon: 'phone_android',  color: 'text-orange-500' },
   { key: 'show_rocket',     name: 'Rocket',             icon: 'rocket_launch',  color: 'text-purple-600' },
-  { key: 'show_visa',       name: 'Visa',               icon: 'credit_card',    color: 'text-blue-600'   },
-  { key: 'show_mastercard', name: 'Mastercard',         icon: 'credit_card',    color: 'text-red-600'    },
+  //{ key: 'show_visa',       name: 'Visa',               icon: 'credit_card',    color: 'text-blue-600'   },
+  //{ key: 'show_mastercard', name: 'Mastercard',         icon: 'credit_card',    color: 'text-red-600'    },
   { key: 'show_cod',        name: 'ক্যাশ অন ডেলিভারি', icon: 'payments',       color: 'text-green-600'  },
-  { key: 'show_emi',        name: 'EMI কিস্তি',         icon: 'calendar_month', color: 'text-indigo-600' },
+  //{ key: 'show_emi',        name: 'EMI কিস্তি',         icon: 'calendar_month', color: 'text-indigo-600' },
 ]
 const visiblePaymentMethods = computed(() =>
     allPaymentMethods.filter(m => paymentMethods.value[m.key] !== false)

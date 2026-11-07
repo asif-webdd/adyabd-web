@@ -237,7 +237,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-gray-300 mt-12" :style="{ backgroundColor: colors.footer_color || '#1a1a2e' }">
+    <footer class="text-gray-300" :style="{ backgroundColor: colors.footer_color || '#1a1a2e' }">
       <div :class="[containerWidth, 'mx-auto px-4 py-12']">
         <div class="grid gap-8" :class="footerGridCols">
           <div>
@@ -272,11 +272,13 @@
                     class="mi mi-sm">support_agent</span>{{ tr('লাইভ সাপোর্ট') }}
                 </NuxtLink>
               </li>
+              <!--
               <li>
                 <NuxtLink to="/policy/return" class="hover:text-primary transition-colors flex items-center gap-1.5">
                   <span class="mi mi-sm">assignment_return</span>{{ tr('রিটার্ন পলিসি') }}
                 </NuxtLink>
               </li>
+              -->
               <li>
                 <NuxtLink to="/policy/terms" class="hover:text-primary transition-colors flex items-center gap-1.5">
                   <span class="mi mi-sm">gavel</span>{{ tr('শর্তাবলী') }}
@@ -287,9 +289,11 @@
                   <span class="mi mi-sm">privacy_tip</span>{{ tr('গোপনীয়তা নীতি') }}
                 </NuxtLink>
               </li>
+              <!--
               <li>
                 <NuxtLink to="/blog" class="hover:text-primary transition-colors flex items-center gap-1.5"><span class="mi mi-sm">article</span>{{ tr('ব্লগ') }}</NuxtLink>
               </li>
+              -->
             </ul>
           </div>
           <div>
@@ -341,7 +345,7 @@
         </div>
         <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p class="text-xs text-gray-500 font-bengali">{{ footerData.copyright }}</p>
-          <p class="text-xs text-gray-500">Made with <span class="text-accent">♥</span> in Bangladesh 🇧🇩</p>
+          <p class="text-xs text-gray-500">Made with <span class="text-accent">♥</span> in ADYA 🇧🇩</p>
         </div>
       </div>
     </footer>

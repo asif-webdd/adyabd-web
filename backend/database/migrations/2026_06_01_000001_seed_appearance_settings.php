@@ -156,9 +156,9 @@ return new class extends Migration
             // ════════════════════════════════════════════════════════════════
             // FOOTER
             // ════════════════════════════════════════════════════════════════
-            ['key' => 'footer_copyright', 'value' => '© 2025 বাজার.BD — সর্বস্বত্ব সংরক্ষিত',       'type' => $t, 'label' => 'Footer Copyright',    'is_public' => true],
-            ['key' => 'footer_tagline',   'value' => 'বাংলাদেশের সেরা অনলাইন মার্কেটপ্লেস',          'type' => $t, 'label' => 'Footer Tagline',     'is_public' => true],
-            ['key' => 'footer_address',   'value' => 'ঢাকা, বাংলাদেশ',                                'type' => $t, 'label' => 'Footer Address',     'is_public' => true],
+            ['key' => 'footer_copyright', 'value' => '© 2026 ADYA BD',       'type' => $t, 'label' => 'Footer Copyright',    'is_public' => true],
+            ['key' => 'footer_tagline',   'value' => 'Best online marketplace in Bangladesh',           'type' => $t, 'label' => 'Footer Tagline',     'is_public' => true],
+            ['key' => 'footer_address',   'value' => 'Mohammadpur, Dhaka',                              'type' => $t, 'label' => 'Footer Address',     'is_public' => true],
             ['key' => 'footer_phone',     'value' => '',                                                'type' => $t, 'label' => 'Footer Phone',       'is_public' => true],
             ['key' => 'footer_email',     'value' => '',                                                'type' => $t, 'label' => 'Footer Email',       'is_public' => true],
             ['key' => 'social_facebook',  'value' => '', 'type' => $t, 'label' => 'Facebook URL',       'is_public' => true],

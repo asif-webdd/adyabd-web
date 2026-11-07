@@ -21,16 +21,16 @@ class BannerController extends Controller
         $base = Banner::active()->forPosition($position)->orderBy('sort_order');
 
         if ($type === 'banner') {
-            $items = $base->banners()->get();
+            $items = $this->withUrls($base->banners()->get());
             return $this->success(['banners' => $items, 'sliders' => [], 'all' => $items]);
         }
 
         if ($type === 'slider') {
-            $items = $base->sliders()->get();
+            $items = $this->withUrls($base->sliders()->get());
             return $this->success(['banners' => [], 'sliders' => $items, 'all' => $items]);
         }
 
-        $all = $base->get();
+        $all = $this->withUrls($base->get());
         $banners = $all->where('type', 'banner')->values();
         $sliders = $all->where('type', 'slider')->values();
 
@@ -51,7 +51,7 @@ class BannerController extends Controller
     public function _sliders(?string $position = null)
     {
         $position ??= request('position', 'hero');
-        return Banner::active()->forPosition($position)->sliders()->orderBy('sort_order')->get();
+        return $this->withUrls(Banner::active()->forPosition($position)->sliders()->orderBy('sort_order')->get());
     }
 
     // ── Internal helpers called by LandingPageController ─────────────────────
@@ -62,7 +62,7 @@ class BannerController extends Controller
     public function static(Request $request): JsonResponse
     {
         $position = $request->get('position', 'hero');
-        return $this->success(Banner::active()->forPosition($position)->banners()->orderBy('sort_order')->get());
+        return $this->success($this->withUrls(Banner::active()->forPosition($position)->banners()->orderBy('sort_order')->get()));
     }
 
     /**
@@ -72,13 +72,18 @@ class BannerController extends Controller
     public function _banners()
     {
         // scope: type = 'banner'
-        return Banner::active()->banners()->orderBy('sort_order')->get()->map(function ($item) {
-            if (!Str::startsWith($item->mobile_image, 'http')){
-                $item->mobile_image = storage_url($item->mobile_image);
-            }
-            if (!Str::startsWith($item->image, 'http')){
-                $item->image = storage_url($item->image);
-            }
+        return $this->withUrls(Banner::active()->banners()->orderBy('sort_order')->get());
+    }
+
+    /**
+     * Turn stored paths (banners/abc.jpg) into full public URLs (R2 or local storage).
+     * mobile_image falls back to the desktop image when empty.
+     */
+    private function withUrls($items)
+    {
+        return $items->map(function ($item) {
+            $item->image        = storage_url($item->image);
+            $item->mobile_image = storage_url($item->mobile_image) ?: $item->image;
             return $item;
         });
     }

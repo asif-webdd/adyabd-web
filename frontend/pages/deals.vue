@@ -103,9 +103,9 @@ onMounted(loadDeals)
 </script>
 
 <template>
-  <div :class="[containerWidth, 'mx-auto px-4 py-6 pb-24 md:pb-8']">
+  <div :class="[containerWidth, 'mx-auto px-4 py-6 md:pb-8']">
     <!-- Header -->
-    <div class="relative overflow-hidden rounded-2xl mb-8 p-8 md:p-10 text-white text-center" style="background:linear-gradient(135deg,#F42A41,#c4001f)">
+    <div class="relative overflow-hidden rounded-2xl mb-8 p-5 md:p-10 text-white text-center" style="background:linear-gradient(135deg,#F42A41,#c4001f)">
       <div class="absolute inset-0 opacity-20">
         <img src="/images/banner-pattern.svg" class="w-full h-full object-cover"/>
       </div>
@@ -143,10 +143,10 @@ onMounted(loadDeals)
     <template v-else>
       <!-- Featured Deal -->
       <div v-if="featuredDeal" class="bg-gradient-to-r from-orange-500 to-yellow-500 rounded-2xl overflow-hidden mb-6 flex flex-col md:flex-row items-center">
-        <div class="md:w-64 shrink-0">
-          <img :src="dealImage(featuredDeal)" :alt="featuredDeal.name" class="w-full h-48 md:h-full object-cover"/>
+        <div class="md:w-64 shrink-0 py-3">
+          <img :src="dealImage(featuredDeal)" :alt="featuredDeal.name" class="rounded-xl w-full h-48 md:h-full object-cover"/>
         </div>
-        <div class="flex-1 p-6 text-white text-center md:text-left">
+        <div class="flex-1 p-3 text-white text-center md:text-left">
           <span class="badge bg-white/20 border border-white/30 text-white mb-2 inline-flex items-center gap-1">
             <span class="mi mi-sm">bolt</span>{{ tr('আজকের ডিল অফ দ্য ডে') }}
           </span>
@@ -169,7 +169,7 @@ onMounted(loadDeals)
             </div>
           </div>
         </div>
-        <NuxtLink :to="`/product/${featuredDeal.slug ?? featuredDeal.id}`" class="m-4 shrink-0 bg-white text-orange-500 font-display font-bold px-8 py-4 rounded-xl hover:bg-orange-50 transition-colors flex items-center gap-2">
+        <NuxtLink :to="`/product/${featuredDeal.slug ?? featuredDeal.id}`" class="m-4 shrink-0 bg-white text-orange-500 font-display font-bold px-8 py-3 rounded-xl hover:bg-orange-50 transition-colors flex items-center gap-2">
           <span class="mi">shopping_cart</span>{{ tr('এখনই কিনুন') }}
         </NuxtLink>
       </div>
