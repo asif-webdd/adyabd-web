@@ -68,7 +68,7 @@
       <SkProductSection v-if="pending.featured" :count="10" :show-tabs="true" :tab-count="4" :show-more="true" :grid-class="productGridCols"/>
       <div v-else>
         <div class="flex items-center justify-between mb-5">
-          <h2 class="section-title">{{ labels.label_featured }}</h2>
+          <h2 class="section-title">{{ tr(labels.label_featured) }}</h2>
         </div>
         <!-- Category filter tabs: names + products come from real categories; scrolls sideways, scrollbar hidden -->
         <div v-if="productTabs.length > 1" class="flex gap-2 overflow-x-auto scrollbar-hide snap-slider -mx-4 px-4 pb-1 mb-5 md:mx-0 md:px-0">
@@ -93,7 +93,7 @@
     <div v-if="sections.show_sidebar_banners && sidebarBanners.length" class="space-y-3">
       <div class="flex items-center gap-2 mb-1">
         <span class="mi text-primary">local_offer</span>
-        <h2 class="section-title">{{ labels.label_special_offers }}</h2>
+        <h2 class="section-title">{{ tr(labels.label_special_offers) }}</h2>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <NuxtLink v-for="(banner, idx) in sidebarBanners" :key="banner.id" :to="banner.link || '#'" class="relative overflow-hidden rounded-xl group flex items-center gap-4 p-4 text-white min-h-[100px]" :style="{ background: palette[(idx + 2) % palette.length].gradient }">
@@ -113,11 +113,11 @@
     <div v-if="sections.show_local_brands_banner" class="relative overflow-hidden bg-gradient-to-r from-primary to-primary-dark rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-6">
       <img src="/images/placeholder.svg" alt="Bangladesh" class="w-20 h-20 rounded-2xl object-cover border-4 border-white/20 shrink-0"/>
       <div class="flex-1 text-center md:text-left">
-        <h3 class="font-display font-extrabold text-2xl mb-1">{{ localBrands.heading }}</h3>
-        <p class="font-bengali text-green-100">{{ localBrands.subtext }}</p>
+        <h3 class="font-display font-extrabold text-2xl mb-1">{{ tr(localBrands.heading) }}</h3>
+        <p class="font-bengali text-green-100">{{ tr(localBrands.subtext) }}</p>
       </div>
       <NuxtLink :to="localBrands.button_link" class="btn-primary shrink-0">
-        <span class="mi mi-sm">storefront</span> {{ localBrands.button_label }}
+        <span class="mi mi-sm">storefront</span> {{ tr(localBrands.button_label) }}
       </NuxtLink>
     </div>
 
@@ -127,7 +127,7 @@
       <section v-else>
         <div class="flex items-center justify-between mb-5">
           <div class="flex items-center gap-2">
-            <h2 class="section-title">{{ labels.label_new_arrivals }}</h2>
+            <h2 class="section-title">{{ tr(labels.label_new_arrivals) }}</h2>
             <span class="badge bg-primary text-white">{{ tr('নতুন') }}</span>
           </div>
           <NuxtLink to="/search?sort=newest" class="text-primary font-bengali text-sm font-medium flex items-center gap-1 hover:underline">
@@ -146,7 +146,7 @@
       <section v-else>
         <div class="flex items-center justify-between mb-5">
           <div class="flex items-center gap-2">
-            <h2 class="section-title">{{ labels.label_trending }}</h2>
+            <h2 class="section-title">{{ tr(labels.label_trending) }}</h2>
             <span class="badge bg-primary text-white">🔥</span>
           </div>
           <NuxtLink to="/search?sort=trending" class="text-primary font-bengali text-sm font-medium flex items-center gap-1 hover:underline">
@@ -162,7 +162,7 @@
     <!-- ─── Payment Methods ───────────────────────────────── -->
     <div v-if="sections.show_payment_methods" class="cus-payment-menthods-sec bg-white rounded-2xl p-6 shadow-card">
       <h3 class="font-display font-bold text-lg text-center text-gray-800 mb-5 flex items-center justify-center gap-2">
-        <span class="mi text-primary">payments</span> {{ paymentMethods.strip_heading }}
+        <span class="mi text-primary">payments</span> {{ tr(paymentMethods.strip_heading) }}
       </h3>
       <div class="cus-payment-menthods flex flex-wrap justify-center gap-3">
         <div v-for="method in visiblePaymentMethods" :key="method.name" class="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl hover:border-primary transition-colors">
@@ -177,9 +177,9 @@
       <img :src="appDownload.image || '/images/placeholder.svg'" alt="App" class="w-32 h-32 rounded-2xl object-cover border-4 border-white/10 shrink-0"/>
       <div class="flex-1 text-center md:text-left">
         <h3 class="font-display font-extrabold text-2xl mb-2 flex items-center gap-2">
-          <span class="mi text-primary">install_mobile</span> {{ appDownload.heading }}
+          <span class="mi text-primary">install_mobile</span> {{ tr(appDownload.heading) }}
         </h3>
-        <p class="font-bengali text-gray-400 mb-5">{{ appDownload.subtext }}</p>
+        <p class="font-bengali text-gray-400 mb-5">{{ tr(appDownload.subtext) }}</p>
         <div class="flex gap-3 flex-wrap justify-center md:justify-start">
           <a v-if="appDownload.app_store_url" :href="appDownload.app_store_url" target="_blank" rel="noopener" class="flex items-center gap-3 bg-white text-gray-900 px-5 py-3 rounded-xl hover:bg-gray-100 transition-colors">
             <span class="mi text-2xl">apple</span>
