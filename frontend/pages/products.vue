@@ -48,6 +48,32 @@
             </label>
           </div>
         </div>
+        <div v-if="brands.length" class="bg-white rounded-2xl p-4 shadow-card">
+          <h3 class="font-display font-bold text-gray-800 mb-3 flex items-center gap-2"><span class="mi mi-sm text-primary">business</span>{{ tr('ব্র্যান্ড') }}</h3>
+          <div class="space-y-2 max-h-48 overflow-y-auto">
+            <label v-for="brand in brands" :key="brand.id" class="flex items-center justify-between cursor-pointer pr-1">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" class="accent-primary rounded" v-model="selectedBrands" :value="brand.id" @change="applyFilters"/>
+                <span class="text-sm font-bengali text-gray-700">{{ brand.name }}</span>
+              </div>
+              <span class="text-xs text-gray-400">({{ brand.products_count ?? 0 }})</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-card">
+          <h3 class="font-display font-bold text-gray-800 mb-3 flex items-center gap-2"><span class="mi mi-sm text-primary">star</span>{{ tr('রেটিং') }}</h3>
+          <div class="space-y-2">
+            <label v-for="r in [5,4,3,2,1]" :key="r" class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="rating" class="accent-primary" v-model="selectedRating" :value="r" @change="applyFilters"/>
+              <div class="flex gap-0.5">
+                <span v-for="i in 5" :key="i" class="mi mi-sm" :class="i<=r?'mi-filled text-gold':'text-gray-300'" style="font-size:14px">star</span>
+              </div>
+              <span class="text-xs font-bengali text-gray-500">{{ tr('ও উপরে') }}</span>
+            </label>
+          </div>
+        </div>
+
         <button @click="clearFilters" class="w-full btn-outline justify-center text-sm">
           <span class="mi mi-sm">clear</span>{{ tr('ফিল্টার মুছুন') }}
         </button>
@@ -122,6 +148,9 @@ const sortBy        = ref('')
 const minPrice      = ref(null)
 const maxPrice      = ref(null)
 const selectedRange = ref(null)
+const brands         = ref([])
+const selectedBrands = ref([])
+const selectedRating = ref(null)
 
 const priceRanges = [
   { label: 'সর্বোচ্চ ৳৫০০',    min: 0,     max: 500   },
@@ -150,6 +179,8 @@ const buildParams = () => {
   if (sortBy.value)           p.sort      = sortBy.value
   if (minPrice.value != null && minPrice.value !== '') p.min_price = minPrice.value
   if (maxPrice.value != null && maxPrice.value !== '') p.max_price = maxPrice.value
+  if (selectedBrands.value.length) p.brands = selectedBrands.value.join(',')
+  if (selectedRating.value)        p.rating = selectedRating.value
   return p
 }
 
@@ -185,6 +216,8 @@ const clearFilters = () => {
   minPrice.value = null
   maxPrice.value = null
   selectedRange.value = null
+  selectedBrands.value = []
+  selectedRating.value = null
   sortBy.value = ''
   applyFilters()
 }
@@ -202,6 +235,7 @@ if (hadServerData) {
 }
 
 onMounted(async () => {
+  api.get('/products/filters').then(r => { brands.value = r?.brands || [] }).catch(() => {})
   if (!categories.value.length) landingStore.fetchHome()
   if (!hadServerData) await loadProducts()
 })
