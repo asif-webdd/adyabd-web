@@ -42,12 +42,12 @@
           </div>
           <p class="text-xs font-bengali mb-3 flex items-center gap-1" :class="item.inStock ? 'text-green-600' : 'text-accent'">
             <span class="mi mi-sm">{{ item.inStock ? 'check_circle' : 'cancel' }}</span>
-            {{ item.inStock ? 'স্টকে আছে' : 'স্টক নেই' }}
+            {{ item.inStock ? tr('স্টকে আছে') : tr('স্টক নেই') }}
           </p>
           <button @click="addOneToCart(item)" :disabled="!item.inStock" class="w-full text-sm font-bengali font-semibold py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5"
             :class="item.inStock ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-gray-100 text-gray-400 cursor-not-allowed'">
             <span class="mi mi-sm">add_shopping_cart</span>
-            {{ item.inStock ? 'কার্টে যোগ করুন' : 'স্টক নেই' }}
+            {{ !item.inStock ? tr('স্টক নেই') : item.hasVariants ? tr('অপশন বেছে নিন') : tr('কার্টে যোগ করুন') }}
           </button>
         </div>
       </div>
@@ -91,12 +91,14 @@ const normalised = computed(() =>
       discount:      p.discount_percentage ?? 0,
       image:         img ? img : '',
       inStock:       p.is_active !== false && (p.quantity ?? 1) > 0,
+      hasVariants:   !!p.has_variants,
     }
   })
 )
 
 const addOneToCart = async (item) => {
   if (!item.inStock) return
+  if (item.hasVariants) return navigateTo('/product/' + item.slug)
   await cartStore.add(item.id)
   if (process.client && window.$toast) {
     window.$toast({ type: 'success', title: 'কার্টে যোগ হয়েছে!', duration: 2000 })
@@ -105,7 +107,7 @@ const addOneToCart = async (item) => {
 
 const addAllToCart = async () => {
   addingAll.value = true
-  for (const item of normalised.value.filter(i => i.inStock)) {
+  for (const item of normalised.value.filter(i => i.inStock && !i.hasVariants)) {
     await cartStore.add(item.id)
   }
   addingAll.value = false

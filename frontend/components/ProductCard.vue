@@ -27,8 +27,8 @@
                 style="background-color: var(--color-primary);"
                 @mouseenter="e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'"
                 @mouseleave="e => e.currentTarget.style.backgroundColor = 'var(--color-primary)'">
-          <span class="mi mi-sm">{{ cartJustAdded ? 'check_circle' : 'add_shopping_cart' }}</span>
-          {{ cartJustAdded ? 'যোগ হয়েছে' : 'কার্ট' }}
+          <span class="mi mi-sm">{{ cartJustAdded ? 'check_circle' : product.hasVariants ? 'tune' : 'add_shopping_cart' }}</span>
+          {{ cartJustAdded ? tr('যোগ হয়েছে') : tr('কার্ট') }}
         </button>
       </div>
     </div>
@@ -63,8 +63,8 @@
                 style="background-color: var(--color-primary);"
                 @mouseenter="e => e.currentTarget.style.backgroundColor = 'var(--color-primary-dark)'"
                 @mouseleave="e => e.currentTarget.style.backgroundColor = 'var(--color-primary)'">
-          <span class="mi mi-sm">{{ cartJustAdded ? 'check_circle' : 'add_shopping_cart' }}</span>
-          {{ cartJustAdded ? 'যোগ হয়েছে!' : product.quantity === 0 ? 'স্টক নেই' : 'কার্টে যোগ' }}
+          <span class="mi mi-sm">{{ cartJustAdded ? 'check_circle' : product.hasVariants ? 'tune' : 'add_shopping_cart' }}</span>
+          {{ cartJustAdded ? tr('যোগ হয়েছে!') : product.quantity === 0 ? tr('স্টক নেই') : product.hasVariants ? tr('অপশন বেছে নিন') : tr('কার্টে যোগ') }}
         </button>
       </div>
     </div>
@@ -114,8 +114,8 @@
             <span>{{ tr('যোগ হয়েছে!') }}</span>
           </template>
           <template v-else>
-            <span class="mi mi-sm">{{ product.quantity === 0 ? 'remove_shopping_cart' : 'add_shopping_cart' }}</span>
-            {{ product.quantity === 0 ? 'স্টক নেই' : 'কার্টে যোগ করুন' }}
+            <span class="mi mi-sm">{{ product.quantity === 0 ? 'remove_shopping_cart' : product.hasVariants ? 'tune' : 'add_shopping_cart' }}</span>
+            {{ product.quantity === 0 ? tr('স্টক নেই') : product.hasVariants ? tr('অপশন বেছে নিন') : tr('কার্টে যোগ করুন') }}
           </template>
         </button>
       </div>
@@ -184,8 +184,8 @@
             <span>{{ tr('যোগ হয়েছে!') }}</span>
           </template>
           <template v-else>
-            <span class="mi mi-sm">{{ product.quantity === 0 ? 'remove_shopping_cart' : 'add_shopping_cart' }}</span>
-            {{ product.quantity === 0 ? 'স্টক নেই' : 'কার্টে যোগ করুন' }}
+            <span class="mi mi-sm">{{ product.quantity === 0 ? 'remove_shopping_cart' : product.hasVariants ? 'tune' : 'add_shopping_cart' }}</span>
+            {{ product.quantity === 0 ? tr('স্টক নেই') : product.hasVariants ? tr('অপশন বেছে নিন') : tr('কার্টে যোগ করুন') }}
           </template>
         </button>
       </div>
@@ -280,6 +280,12 @@ const doAddToCart = async () => {
   } finally { cartLoading.value = false }
 }
 const handleAddToCart = () => {
+  // Variable product: customer must pick options on the details page first
+  if (props.product.hasVariants) {
+    trackSelect()
+    navigateTo(`/product/${props.product.slug || props.product.id}`)
+    return
+  }
   if (!authStore.isLoggedIn) { authPopup.open(() => doAddToCart()); return }
   doAddToCart()
 }

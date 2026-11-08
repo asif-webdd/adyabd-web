@@ -53,6 +53,16 @@ class CartController extends Controller
         if (!$product->is_active) return $this->error('Product is not available.', 422);
         if ($product->quantity < $request->quantity) return $this->error('Insufficient stock.', 422);
 
+        // Variable product: an option (variant) must be chosen, and it must belong to this product.
+        if ($product->has_variants || $product->variants()->exists()) {
+            if (!$request->variant_id) {
+                return $this->error('Please select product options first.', 422);
+            }
+            if (!$product->variants()->whereKey($request->variant_id)->exists()) {
+                return $this->error('Selected option does not belong to this product.', 422);
+            }
+        }
+
         $item = Cart::firstOrNew(
             ['user_id' => $request->user()->id, 'product_id' => $request->product_id, 'variant_id' => $request->variant_id]
         );

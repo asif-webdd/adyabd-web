@@ -68,7 +68,7 @@
             <p class="font-bengali text-xs text-gray-700 line-clamp-1 mb-0.5">{{ item.product?.name }}</p>
             <p class="font-display font-bold text-accent text-sm">৳{{ Number(item.product?.price ?? 0).toLocaleString() }}</p>
           </div>
-          <button @click.prevent="addToCart(item.product?.id)" class="mt-1 w-full text-xs bg-primary text-white py-1.5 rounded-lg font-bengali hover:bg-green-800 transition-colors flex items-center justify-center gap-1">
+          <button @click.prevent="addToCart(item.product?.id, item.product)" class="mt-1 w-full text-xs bg-primary text-white py-1.5 rounded-lg font-bengali hover:bg-green-800 transition-colors flex items-center justify-center gap-1">
             <span class="mi mi-sm">add_shopping_cart</span> কার্টে
           </button>
         </NuxtLink>
@@ -147,13 +147,24 @@ const formatDate = (iso) => {
   return new Date(iso).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-const addToCart = async (productId) => {
+//const addToCart = async (productId) => {
+  //if (!productId) return
+  //await cartStore.add(productId)
+  //if (process.client && window.$toast) {
+    //window.$toast({ type: 'success', title: 'কার্টে যোগ হয়েছে!', duration: 2000 })
+  //}
+//}
+
+const addToCart = async (productId, product) => {
   if (!productId) return
+  if (product?.has_variants) return navigateTo(`/product/${product.slug || productId}`)
   await cartStore.add(productId)
   if (process.client && window.$toast) {
     window.$toast({ type: 'success', title: 'কার্টে যোগ হয়েছে!', duration: 2000 })
   }
 }
+
+
 
 onMounted(async () => {
   // Dashboard stats
