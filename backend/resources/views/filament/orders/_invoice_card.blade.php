@@ -99,8 +99,8 @@
                 <td style="color:#cbd5e1;width:20px">{{ $i+1 }}</td>
                 <td>
                     <div class="pname">{{ $item->product_name }}</div>
-                    @if(!empty($item->variant_options) && is_array($item->variant_options) && count($item->variant_options))
-                        <div class="pvar">{{ collect($item->variant_options)->map(fn($v,$k)=>"$k: $v")->implode(' · ') }}</div>
+                    @if(variant_label($item->variant_options) !== '')
+                        <div class="pvar">{{ variant_label($item->variant_options, ' · ') }}</div>
                     @endif
                 </td>
                 <td>BDT {{ number_format($item->unit_price,2) }}</td>

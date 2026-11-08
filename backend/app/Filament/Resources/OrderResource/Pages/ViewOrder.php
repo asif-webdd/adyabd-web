@@ -138,19 +138,10 @@ class ViewOrder extends ViewRecord
                     Grid::make(7)->schema([
                         ImageEntry::make('product_image')->label('')->height(56)->width(56)->extraImgAttributes(['class' => 'rounded-lg object-cover'])->defaultImageUrl(asset('images/shop-default.png')),
                         TextEntry::make('product_name')->label('Product')->weight(FontWeight::SemiBold)->columnSpan(2),
-                        TextEntry::make('variant_display')->label('Variant')->getStateUsing(function ($record) {
-                            $options = $record->variant_options;
+                        
 
-                            if (is_string($options)) {
-                                $options = json_decode($options, true);
-                            }
-
-                            if (!is_array($options) || empty($options)) {
-                                return '—';
-                            }
-
-                            return collect($options)->map(fn($v, $k) => "$k: $v")->implode(', ');
-                        })->color('gray')->columnSpan(2),
+                        TextEntry::make('variant_display')->label('Variant')->getStateUsing(fn ($record) => variant_label($record->variant_options) ?: '—')
+                        ->color('gray')->columnSpan(2),
 
                         TextEntry::make('unit_price')->label('Unit Price')->money('BDT'),
                         TextEntry::make('quantity')->label('Qty')->badge()->color('gray'),

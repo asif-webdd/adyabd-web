@@ -13,14 +13,7 @@
         <tbody>
         @foreach ($record->items as $item)
             @php
-                $variantOptions = $item->variant_options;
-                if (is_string($variantOptions)) {
-                    $variantOptions = json_decode($variantOptions, true);
-                }
-
-                $meta = collect([
-                    is_array($variantOptions) && !empty($variantOptions) ? collect($variantOptions)->map(fn($value, $key) => "{$key}: {$value}")->join(' · ') : '',
-                ])->filter()->join(' · ');
+                $meta = variant_label($item->variant_options, ' · ');
             @endphp
             <tr>
                 <td style="padding:10px 8px;border-bottom:1px solid #f0f0f0">

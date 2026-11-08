@@ -73,6 +73,19 @@ const trackOrder = async () => {
 onMounted(() => {
   if (trackId.value) trackOrder()
 })
+
+
+
+// variant_options can be [{attribute,value}] (current) or {Color:'Red'} (legacy)
+const variantText = (o) => {
+  if (typeof o === 'string') { try { o = JSON.parse(o) } catch { return o } }
+  if (!o || typeof o !== 'object') return ''
+  return Object.entries(o).map(([k, v]) => {
+    if (v && typeof v === 'object') return v.attribute ? `${v.attribute}: ${v.value}` : String(v.value ?? '')
+    return /^\d+$/.test(k) ? String(v) : `${k}: ${v}`
+  }).filter(Boolean).join(', ')
+}
+
 </script>
 
 <template>
@@ -214,7 +227,7 @@ onMounted(() => {
             <div class="flex-1 min-w-0">
               <p class="font-medium text-gray-800 text-sm line-clamp-1">{{ item.product_name }}</p>
               <p class="text-gray-400 text-xs mt-0.5">
-                <span v-for="(val, key) in item.variant_options" :key="key">{{ key }}: {{ val }}</span>
+                <span>{{ variantText(item.variant_options) }}</span>
               </p>
               <p class="text-gray-400 text-xs">Qty: {{ item.quantity }}</p>
             </div>

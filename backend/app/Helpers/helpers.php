@@ -97,3 +97,45 @@ if (!function_exists('bd_phone')) {
         return '880' . $p;
     }
 }
+
+
+if (!function_exists('variant_label')) {
+    /**
+     * Human label for variant options. Handles both formats:
+     *   [{"attribute":"Color","value":"Black"}, ...]  (current)
+     *   {"Color":"Black","Size":"M"}                  (legacy)
+     * and JSON strings. Returns "" when there is nothing to show.
+     */
+    function variant_label($options, string $sep = ', '): string
+    {
+        if (is_string($options)) {
+            $options = json_decode($options, true);
+        }
+        if (!is_array($options) || empty($options)) {
+            return '';
+        }
+
+        $parts = [];
+        foreach ($options as $key => $val) {
+            if (is_array($val)) {
+                $name  = $val['attribute'] ?? $val['name'] ?? $val['key'] ?? null;
+                $value = $val['value'] ?? null;
+                if (is_array($value)) { $value = implode('/', array_map('strval', $value)); }
+                $parts[] = $name !== null && $name !== '' ? "{$name}: {$value}" : (string) ($value ?? '');
+            } else {
+                $parts[] = is_int($key) ? (string) $val : "{$key}: {$val}";
+            }
+        }
+
+        return implode($sep, array_filter($parts, fn($x) => $x !== ''));
+    }
+}
+
+
+
+
+
+
+
+
+
