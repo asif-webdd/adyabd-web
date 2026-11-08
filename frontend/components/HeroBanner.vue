@@ -27,9 +27,9 @@
               </div>
 
               <!-- Title Bengali -->
-              <h1 class="font-extrabold text-3xl md:text-5xl leading-tight mb-1 drop-shadow-lg font-bengali-display">{{ slide.title_bn }}</h1>
+              <h1 class="font-extrabold text-3xl md:text-5xl leading-tight mb-1 drop-shadow-lg font-bengali-display">{{ slide.title }}</h1>
               <!-- Title English -->
-              <p class="text-yellow-300 font-semibold text-base md:text-lg mb-3 tracking-wide drop-shadow">{{ slide.title }}</p>
+              <p class="text-yellow-300 font-semibold text-base md:text-lg mb-3 tracking-wide drop-shadow">{{ slide.title_bn }}</p>
               <!-- Subtitle -->
               <p class="text-white/80 text-sm md:text-base mb-7 leading-relaxed max-w-md">{{ slide.subtitle }}</p>
               <!-- CTA -->

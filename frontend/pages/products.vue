@@ -6,7 +6,7 @@
         <span class="mi mi-sm">home</span>{{ tr('হোম') }}
       </NuxtLink>
       <span class="mi mi-sm">chevron_right</span>
-      <span class="text-gray-800 font-semibold">{{ tr('সব পণ্য') }}</span>
+      <span class="text-gray-800 font-semibold">{{ tr('All Products') }}</span>
     </nav>
 
     <!-- Header -->
@@ -16,7 +16,7 @@
           <span class="mi text-4xl text-white">storefront</span>
         </div>
         <div>
-          <h1 class="font-display font-extrabold text-3xl mb-1">{{ tr('সব পণ্য') }}</h1>
+          <h1 class="font-display font-extrabold text-3xl mb-1">{{ tr('All Products') }}</h1>
           <p class="font-bengali text-white/80">{{ totalResults }} {{ tr('টি পণ্য') }}</p>
         </div>
       </div>
@@ -24,7 +24,7 @@
 
     <!-- Category chips (jump to a category page) -->
     <div v-if="categories.length" class="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1 mb-5 md:mx-0 md:px-0">
-      <span class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bengali font-medium bg-primary text-white shrink-0">{{ tr('সব পণ্য') }}</span>
+      <span class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bengali font-medium bg-primary text-white shrink-0">{{ tr('All Products') }}</span>
       <NuxtLink v-for="c in categories" :key="c.slug" :to="`/category/${c.slug}`"
         class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bengali font-medium bg-white text-gray-600 hover:bg-gray-100 transition-colors shrink-0">
         {{ catLabel(c) }}
@@ -223,7 +223,7 @@ const clearFilters = () => {
 }
 
 useHead(computed(() => ({
-  title: `${tr('সব পণ্য')} — ${shopName.value}`,
+  title: `${tr('All Products')} — ${shopName.value}`,
 })))
 
 // Server-side first page so crawlers and first paint see the products.

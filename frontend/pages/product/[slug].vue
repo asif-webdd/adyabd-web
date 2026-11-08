@@ -337,7 +337,7 @@
             <button @click="addToCart" :disabled="!inStock || addingToCart" class="cus-details-add-to-cart flex-1 btn-primary justify-center py-3.5 text-base disabled:opacity-60 disabled:cursor-not-allowed">
               <span v-if="addingToCart" class="mi mi-sm animate-spin">refresh</span>
               <span v-else class="mi">shopping_cart</span>
-              {{ addingToCart ? 'যোগ হচ্ছে...' : 'কার্টে যোগ করুন' }}
+              {{ addingToCart ? tr('যোগ হচ্ছে...') : tr('কার্টে যোগ করুন') }}
             </button>
           </div>
 
@@ -375,15 +375,15 @@
         </div>
 
         <!-- ── Description ── -->
-        <div v-if="activeTab === 'বিস্তারিত তথ্য'" class="p-6">
-          <div class="prose prose-sm font-bengali text-gray-700 max-w-none" v-html="product.description || product.description_bn || 'বিস্তারিত তথ্য পাওয়া যায়নি।'"></div>
+        <div v-if="activeTab === tr('বিস্তারিত তথ্য')" class="p-6">
+          <div class="prose prose-sm font-bengali text-gray-700 max-w-none" v-html="product.description || product.description_bn || tr('বিস্তারিত তথ্য পাওয়া যায়নি।')"></div>
           <div v-if="product.short_description" class="mt-4 p-4 bg-gray-50 rounded-xl">
             <p class="font-bengali text-gray-600 text-sm">{{ product.short_description }}</p>
           </div>
         </div>
 
         <!-- ── Specifications ── -->
-        <div v-if="activeTab === 'স্পেসিফিকেশন'" class="p-6">
+        <div v-if="activeTab === tr('স্পেসিফিকেশন')" class="p-6">
           <!-- Variants table (always shown if variants exist) -->
           <div v-if="product.variants?.length" class="mb-6">
             <h3 class="font-display font-bold text-gray-800 mb-3 text-sm flex items-center gap-2">
@@ -465,7 +465,7 @@
         </div>
 
         <!-- ── Reviews ── -->
-        <div v-if="activeTab === 'রিভিউ'" id="reviews" class="p-6">
+        <div v-if="activeTab === tr('রিভিউ')" id="reviews" class="p-6">
           <div v-if="loadingReviews" class="text-center py-8">
             <span class="mi animate-spin text-primary text-3xl">refresh</span>
           </div>
@@ -683,7 +683,7 @@
         </div>
 
         <!-- ── Delivery tab ── -->
-        <div v-if="activeTab === 'ডেলিভারি তথ্য'" class="p-6 space-y-4">
+        <div v-if="activeTab === tr('ডেলিভারি তথ্য')" class="p-6 space-y-4">
           <div v-for="d in deliveryDetails" :key="d.title" class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
             <span class="mi text-2xl text-primary shrink-0">{{ d.icon }}</span>
             <div>

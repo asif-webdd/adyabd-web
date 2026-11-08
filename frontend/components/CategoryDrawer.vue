@@ -126,7 +126,7 @@ const categories = computed(() => (landingStore.categories || []).map((c, i) => 
 })))
 
 const bottomLinks = [
-  { href: '/products', icon: 'shopping_bag', label: 'সব পণ্য' },
+  { href: '/products', icon: 'shopping_bag', label: 'All Products' },
   { href: '/seller/register', icon: 'storefront', label: 'Become a seller' },
   //{ href: '/about', icon: 'info', label: 'আমাদের সম্পর্কে' },
   //{ href: '/blog', icon: 'article', label: 'ব্লগ' },

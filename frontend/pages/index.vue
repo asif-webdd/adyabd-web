@@ -307,7 +307,7 @@ const api = useApi()
 const _norm = (s) => String(s ?? '').trim().toLowerCase()
 const _catLabel = (c) => (isEn.value ? (c.name || c.name_bn) : (c.name_bn || c.name))
 const _allCats = computed(() => (landingStore.categories || []).flatMap(c => [c, ...(c.children || [])]))
-const _allTab = () => ({ key: 'all', slug: null, label: tr('সব পণ্য') })
+const _allTab = () => ({ key: 'all', slug: null, label: 'All Products' })
 
 const productTabs = computed(() => {
   const cats = _allCats.value
