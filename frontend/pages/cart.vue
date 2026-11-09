@@ -89,7 +89,7 @@
             </NuxtLink>
 
             <div class="flex-1 min-w-0">
-              <NuxtLink :to="`/product/${item.product.slug}`" class="font-bengali font-medium text-gray-800 text-sm leading-snug line-clamp-2 mb-2 hover:text-primary transition-colors block">{{ item.product.name }}</NuxtLink>
+              <NuxtLink :to="`/product/${item.product.slug}`" class="font-bengali font-medium text-gray-800 text-sm leading-snug line-clamp-2 mb-1 hover:text-primary transition-colors block">{{ item.product.name }}</NuxtLink>
 
               <div class="flex items-center justify-between flex-wrap gap-2">
                 <span class="font-display font-bold text-accent">৳{{ Number(item.total).toLocaleString() }}</span>

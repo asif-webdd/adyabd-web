@@ -51,7 +51,7 @@
         <nav class="bg-white rounded-2xl shadow-card overflow-hidden">
           <NuxtLink v-for="item in navItems" :key="item.href" :to="item.href" class="flex items-center gap-3 px-4 py-3.5 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors font-bengali text-sm font-medium" active-class="text-primary bg-primary/5 border-l-4 border-l-primary font-bold">
             <span class="mi" :class="$route.path===item.href ? 'text-primary' : 'text-gray-400'">{{ item.icon }}</span>
-            <span class="flex-1">{{ item.label }}</span>
+            <span class="flex-1">{{ tr(item.label) }}</span>
             <span v-if="item.badge" class="badge bg-accent text-white text-xs">{{ item.badge }}</span>
           </NuxtLink>
         </nav>

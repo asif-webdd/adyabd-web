@@ -58,7 +58,7 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->headerActions([\App\Filament\Support\CsvExport::make('customers', ['ID' => 'id', 'Name' => 'name', 'Phone' => 'phone', 'Email' => 'email', 'Status' => 'status', 'Blocked' => 'is_blocked', 'Orders' => 'total_orders', 'Completed' => 'completed_orders', 'Cancelled' => 'cancel_order_count', 'Total spent' => 'total_spent', 'Wallet' => 'wallet_balance', 'Joined' => 'created_at', 'Last login' => 'last_login_at'], [])])
+            ->headerActions([...\App\Filament\Support\CustomerImport::actions(), \App\Filament\Support\CsvExport::make('customers', ['ID' => 'id', 'Name' => 'name', 'Phone' => 'phone', 'Email' => 'email', 'Status' => 'status', 'Blocked' => 'is_blocked', 'Orders' => 'total_orders', 'Completed' => 'completed_orders', 'Cancelled' => 'cancel_order_count', 'Total spent' => 'total_spent', 'Wallet' => 'wallet_balance', 'Joined' => 'created_at', 'Last login' => 'last_login_at'], [])])
             ->columns([
                 TextColumn::make('name')->searchable()->sortable()->description(fn(User $r) => $r->phone),
                 TextColumn::make('total_orders')->label('Orders')->badge()->color('primary'),

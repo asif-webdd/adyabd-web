@@ -69,7 +69,8 @@
             <input v-model.number="pf.quantity" type="number" min="0" class="input-field"
        :disabled="pf.variants.length > 0"
        :placeholder="pf.variants.length ? 'স্টক ভ্যারিয়েন্ট থেকে হিসাব হবে' : tr('স্টক পরিমাণ *')"/>
-            <textarea v-model="pf.description" rows="3" class="input-field md:col-span-2 resize-none" :placeholder="tr('বিবরণ')"></textarea>
+            <!-- <textarea v-model="pf.description" rows="3" class="input-field md:col-span-2 resize-none" :placeholder="tr('বিবরণ')"></textarea> -->
+            <div class="md:col-span-2"><RichTextEditor v-model="pf.description" :placeholder="tr('বিবরণ')" /></div>
             <div class="md:col-span-2">
               <label class="block text-xs font-bold text-gray-600 mb-1">{{ tr('ফিচার্ড ছবি (প্রধান ছবি)') }}</label>
               <input type="file" accept="image/*" @change="e => pf.image = e.target.files[0]" class="text-sm"/>
@@ -172,7 +173,8 @@
             <input v-model.number="ef.quantity" type="number" min="0" class="input-field" :disabled="hasVariants" :placeholder="hasVariants ? 'স্টক ভ্যারিয়েন্ট থেকে হিসাব হচ্ছে' : 'স্টক *'"/>
             <input v-model.number="ef.weight" type="number" min="0" step="0.01" class="input-field" :placeholder="tr('ওজন (কেজি)')"/>
             <input v-model="ef.short_description" class="input-field md:col-span-2" :placeholder="tr('সংক্ষিপ্ত বিবরণ')"/>
-            <textarea v-model="ef.description" rows="4" class="input-field md:col-span-2 resize-none" :placeholder="tr('বিস্তারিত বিবরণ')"></textarea>
+            <!-- <textarea v-model="ef.description" rows="4" class="input-field md:col-span-2 resize-none" :placeholder="tr('বিস্তারিত বিবরণ')"></textarea> -->
+            <div class="md:col-span-2"><RichTextEditor v-model="ef.description" :placeholder="tr('বিস্তারিত বিবরণ')" :min-height="180" /></div>
           </div>
           <label class="flex items-center gap-2 text-sm text-gray-600 mt-3" v-if="editing.is_active">
             <input type="checkbox" v-model="ef.is_active"/> {{ tr('পণ্যটি সাইটে দেখান (বন্ধ করলে লুকানো থাকবে)') }}

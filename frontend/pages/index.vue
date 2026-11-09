@@ -72,7 +72,7 @@
         </div>
         <!-- Category filter tabs: names + products come from real categories; scrolls sideways, scrollbar hidden -->
         <div v-if="productTabs.length > 1" class="flex gap-2 overflow-x-auto scrollbar-hide snap-slider -mx-4 px-4 pb-1 mb-5 md:mx-0 md:px-0">
-          <button v-for="tab in productTabs" :key="tab.key" type="button" @click="activeTab = tab.key" class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bengali font-medium transition-colors shrink-0" :class="activeTab === tab.key ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'">{{ tab.label }}</button>
+          <button v-for="tab in productTabs" :key="tab.key" type="button" @click="activeTab = tab.key" class="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bengali font-medium transition-colors shrink-0" :class="activeTab === tab.key ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'">{{ tr(tab.label) }}</button>
         </div>
         <div v-if="tabLoading" class="grid gap-4" :class="productGridCols">
           <ProductSkeleton v-for="i in 5" :key="i" />

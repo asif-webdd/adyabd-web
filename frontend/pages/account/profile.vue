@@ -66,7 +66,7 @@
             <label v-for="g in genders" :key="g.value" class="flex items-center gap-2 cursor-pointer">
               <input type="radio" name="gender" :value="g.value" v-model="form.gender" class="accent-primary"/>
               <span class="mi mi-sm" :class="g.color">{{ g.icon }}</span>
-              <span class="font-bengali text-sm text-gray-700">{{ g.label }}</span>
+              <span class="font-bengali text-sm text-gray-700">{{ tr(g.label) }}</span>
             </label>
           </div>
         </div>
@@ -81,7 +81,7 @@
       <button @click="saveProfile" :disabled="saving" class="mt-5 btn-primary disabled:opacity-60">
         <span v-if="saving" class="mi mi-sm animate-spin">refresh</span>
         <span v-else class="mi mi-sm">save</span>
-        {{ saving ? 'সংরক্ষণ হচ্ছে...' : 'পরিবর্তন সংরক্ষণ করুন' }}
+        {{ saving ? tr('সংরক্ষণ হচ্ছে...') : tr('পরিবর্তন সংরক্ষণ করুন') }}
       </button>
     </div>
 
@@ -131,7 +131,7 @@
       <button @click="changePassword" :disabled="savingPw || pwForm.password !== pwForm.password_confirmation" class="mt-5 btn-primary disabled:opacity-60">
         <span v-if="savingPw" class="mi mi-sm animate-spin">refresh</span>
         <span v-else class="mi mi-sm">lock_reset</span>
-        {{ savingPw ? 'পরিবর্তন হচ্ছে...' : 'পাসওয়ার্ড পরিবর্তন করুন' }}
+        {{ savingPw ? tr('পরিবর্তন হচ্ছে...') : tr('পাসওয়ার্ড পরিবর্তন করুন') }}
       </button>
     </div>
 

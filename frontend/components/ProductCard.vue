@@ -131,7 +131,7 @@
           <span class="text-xs text-gray-400 font-bengali">({{ product.reviews }})</span>
         </div>
       </div>
-      <h3 class="font-bengali font-medium text-gray-800 text-sm leading-snug line-clamp-2 mb-2">{{ product.name }}</h3>
+      <h3 class="font-bengali font-medium text-gray-800 text-sm leading-snug line-clamp-2 mb-1">{{ product.name }}</h3>
       <div class="flex items-end gap-2 mb-1.5">
         <span class="font-display font-bold text-lg text-accent">৳{{ product.price?.toLocaleString('bn-BD') }}</span>
         <span v-if="product.originalPrice > product.price" class="text-xs text-gray-400 line-through font-bengali">৳{{ product.originalPrice?.toLocaleString('bn-BD') }}</span>
@@ -192,9 +192,9 @@
     </div>
 
     <div class="p-3">
-      <p class="text-xs text-gray-400 font-bengali mb-1 truncate">{{ product.seller }}</p>
-      <h3 class="font-bengali font-medium text-gray-800 text-sm leading-snug line-clamp-2 mb-2">{{ product.name }}</h3>
-      <div class="flex items-center gap-1 mb-2">
+      <!-- <p class="text-xs text-gray-400 font-bengali mb-1 truncate">{{ product.seller }}</p> -->
+      <h3 class="font-bengali font-medium text-gray-800 text-sm leading-snug line-clamp-2 mb-1">{{ product.name }}</h3>
+      <div class="flex items-center gap-1 mb-1">
         <div class="flex">
           <span v-for="i in 5" :key="i" class="mi mi-sm" :class="i <= Math.round(product.rating) ? 'mi-filled text-gold' : 'text-gray-300'" style="font-size: 14px">star</span>
         </div>
@@ -204,9 +204,9 @@
         <span class="font-display font-bold text-lg text-accent">৳{{ product.price?.toLocaleString('bn-BD') }}</span>
         <span v-if="product.originalPrice > product.price" class="text-xs text-gray-400 line-through font-bengali">৳{{ product.originalPrice?.toLocaleString('bn-BD') }}</span>
       </div>
-      <div class="mt-1.5 flex items-center gap-1">
+      <div class="mt-1.0 flex items-center gap-1">
         <span class="mi mi-sm text-primary" style="font-size: 14px">local_shipping</span>
-        <span class="text-xs text-primary font-bengali">{{ product.freeShipping ? 'বিনামূল্যে ডেলিভারি' : product.delivery }}</span>
+        <span class="text-xs text-primary font-bengali">{{ product.freeShipping ? tr('বিনামূল্যে ডেলিভারি') : product.delivery }}</span>
       </div>
     </div>
   </NuxtLink>

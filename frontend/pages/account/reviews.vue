@@ -5,7 +5,7 @@
     <!-- Tabs -->
     <div class="flex gap-2 overflow-x-auto pb-1">
       <button v-for="tab in tabs" :key="tab.value" @click="activeTab = tab.value" class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-bengali font-medium border-2 transition-colors shrink-0" :class="activeTab === tab.value ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-200 hover:border-primary'">
-        {{ tab.label }}
+        {{ tr(tab.label) }}
         <span v-if="tab.count !== undefined" class="opacity-75">({{ tab.count }})</span>
       </button>
     </div>

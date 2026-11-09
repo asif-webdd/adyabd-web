@@ -370,13 +370,14 @@
       <div class="bg-white rounded-2xl shadow-card overflow-hidden mb-8">
         <div class="flex overflow-x-auto border-b border-gray-100">
           <button v-for="tab in tabs" :key="tab.label" @click="activeTab = tab.label" class="px-6 py-4 font-display font-semibold text-sm whitespace-nowrap border-b-2 transition-colors flex items-center gap-2" :class="activeTab === tab.label ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'">
-            <span class="mi mi-sm">{{ tab.icon }}</span>{{ tab.label }}
+            <span class="mi mi-sm">{{ tab.icon }}</span>{{ tr(tab.label) }}
           </button>
         </div>
 
         <!-- ── Description ── -->
         <div v-if="activeTab === tr('বিস্তারিত তথ্য')" class="p-6">
-          <div class="prose prose-sm font-bengali text-gray-700 max-w-none" v-html="product.description || product.description_bn || tr('বিস্তারিত তথ্য পাওয়া যায়নি।')"></div>
+          <div v-if="descriptionIsHtml" class="rich-desc font-bengali text-sm text-gray-700 leading-relaxed max-w-none break-words" v-html="descriptionText"></div>
+          <p v-else class="font-bengali text-sm text-gray-700 leading-relaxed whitespace-pre-line break-words">{{ descriptionText || 'বিস্তারিত তথ্য পাওয়া যায়নি।' }}</p>
           <div v-if="product.short_description" class="mt-4 p-4 bg-gray-50 rounded-xl">
             <p class="font-bengali text-gray-600 text-sm">{{ product.short_description }}</p>
           </div>
@@ -825,6 +826,8 @@ const selectedVariant = ref(null)
 const qty = ref(1)
 const addingToCart = ref(false)
 const activeTab = ref('বিস্তারিত তথ্য')
+const descriptionText   = computed(() => product.value?.description || product.value?.description_bn || '')
+const descriptionIsHtml = computed(() => /<\/?[a-z][\s\S]*>/i.test(descriptionText.value))
 const canReview = ref(false)
 
 const skRelated = [
@@ -1921,3 +1924,25 @@ onUnmounted(() => {
   }
 }
 </style>
+
+
+
+
+<style>
+  .rich-desc h2 { font-size: 1.25rem; font-weight: 700; margin: .9rem 0 .4rem; }
+  .rich-desc h3 { font-size: 1.1rem; font-weight: 700; margin: .8rem 0 .4rem; }
+  .rich-desc p { margin: .4rem 0; }
+  .rich-desc ul { list-style: disc; padding-left: 1.4rem; margin: .4rem 0; }
+  .rich-desc ol { list-style: decimal; padding-left: 1.4rem; margin: .4rem 0; }
+  .rich-desc blockquote { border-left: 3px solid #d1d5db; padding-left: .75rem; color: #6b7280; margin: .5rem 0; }
+  .rich-desc a { color: #2563eb; text-decoration: underline; }
+  .rich-desc img { max-width: 100%; height: auto; border-radius: .5rem; }
+</style>
+
+
+
+
+
+
+
+

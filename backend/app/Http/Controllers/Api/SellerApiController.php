@@ -203,8 +203,9 @@ class SellerApiController extends Controller
                 'price'             => $request->price,
                 'compare_price'     => $request->compare_price,
                 'quantity'          => (int) $request->input('quantity', 0),
-                'short_description' => $request->short_description,
-                'description'       => $request->description,
+                'short_description' => $request->short_description !== null ? strip_tags($request->short_description) : null,
+                //'description'       => $request->description !== null ? strip_tags($request->description) : null,
+                'description' => sanitize_rich_html($request->description),
                 // New seller products wait for admin review before going live.
                 'is_active'         => (bool) setting('seller_products_auto_approve', false),
             ]);
@@ -439,6 +440,16 @@ class SellerApiController extends Controller
         if ($v->fails()) return $this->error($v->errors(), 422);
 
         $data = $request->only('name', 'category_id', 'price', 'compare_price', 'quantity', 'short_description', 'description', 'unit', 'weight');
+        
+        // Seller text is plain text only (no HTML), so it can never run scripts on the product page.
+        
+        //foreach (['short_description', 'description'] as $f) {
+            //if (isset($data[$f])) $data[$f] = strip_tags($data[$f]);
+        //}
+
+        if (isset($data['short_description'])) $data['short_description'] = strip_tags($data['short_description']);
+        if (array_key_exists('description', $data)) $data['description'] = sanitize_rich_html($data['description']);
+
         // With variants the stock is the sum of the variants, not a separate number.
         if ($product->variants()->exists()) unset($data['quantity']);
         // A seller can hide a live product, but cannot self-approve a product still under review.

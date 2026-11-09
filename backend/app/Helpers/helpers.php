@@ -129,6 +129,41 @@ if (!function_exists('variant_label')) {
 
         return implode($sep, array_filter($parts, fn($x) => $x !== ''));
     }
+
+    
+    function sanitize_rich_html(?string $html): ?string
+    {
+        if ($html === null) return null;
+        $html = trim($html);
+        if ($html === '' || !preg_match('/<[a-z!\/]/i', $html)) return $html;
+
+        $html = preg_replace('#<(script|style|iframe|object|embed)\b[^>]*>.*?</\1>#is', '', $html);
+        $allowed = '<p><br><strong><b><em><i><u><s><strike><a><h2><h3><h4><ul><ol><li><blockquote><code><pre><hr>';
+        $html = strip_tags($html, $allowed);
+
+        $prev = libxml_use_internal_errors(true);
+        $doc = new \DOMDocument('1.0', 'UTF-8');
+        $doc->loadHTML('<?xml encoding="UTF-8"><div id="wrap">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+        libxml_use_internal_errors($prev);
+
+        $xpath = new \DOMXPath($doc);
+        foreach ($xpath->query('//*[@id="wrap"]//*') as $el) {
+            foreach (iterator_to_array($el->attributes) as $attr) {
+                $keep = $el->nodeName === 'a' && $attr->name === 'href'
+                    && preg_match('#^(https?://|mailto:|tel:|/)#i', trim($attr->value));
+                if (!$keep) $el->removeAttributeNode($attr);
+            }
+            if ($el->nodeName === 'a') {
+                $el->setAttribute('rel', 'noopener noreferrer nofollow');
+                $el->setAttribute('target', '_blank');
+            }
+        }
+        $wrap = $doc->getElementById('wrap');
+        $out = '';
+        foreach ($wrap->childNodes as $child) $out .= $doc->saveHTML($child);
+        return trim($out);
+    }
 }
 
 
