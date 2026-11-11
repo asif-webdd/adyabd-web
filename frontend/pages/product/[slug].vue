@@ -369,13 +369,18 @@
       ════════════════════════════════════════════════════════════════════ -->
       <div class="bg-white rounded-2xl shadow-card overflow-hidden mb-8">
         <div class="flex overflow-x-auto border-b border-gray-100">
+          <!--
           <button v-for="tab in tabs" :key="tab.label" @click="activeTab = tab.label" class="px-6 py-4 font-display font-semibold text-sm whitespace-nowrap border-b-2 transition-colors flex items-center gap-2" :class="activeTab === tab.label ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'">
+            <span class="mi mi-sm">{{ tab.icon }}</span>{{ tr(tab.label) }}
+          </button>
+          -->
+          <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" class="px-6 py-4 font-display font-semibold text-sm whitespace-nowrap border-b-2 transition-colors flex items-center gap-2" :class="activeTab === tab.key ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'">
             <span class="mi mi-sm">{{ tab.icon }}</span>{{ tr(tab.label) }}
           </button>
         </div>
 
         <!-- ── Description ── -->
-        <div v-if="activeTab === tr('বিস্তারিত তথ্য')" class="p-6">
+        <div v-if="activeTab === 'description'" class="p-6">
           <div v-if="descriptionIsHtml" class="rich-desc font-bengali text-sm text-gray-700 leading-relaxed max-w-none break-words" v-html="descriptionText"></div>
           <p v-else class="font-bengali text-sm text-gray-700 leading-relaxed whitespace-pre-line break-words">{{ descriptionText || 'বিস্তারিত তথ্য পাওয়া যায়নি।' }}</p>
           <div v-if="product.short_description" class="mt-4 p-4 bg-gray-50 rounded-xl">
@@ -384,7 +389,7 @@
         </div>
 
         <!-- ── Specifications ── -->
-        <div v-if="activeTab === tr('স্পেসিফিকেশন')" class="p-6">
+        <div v-if="activeTab === 'specs'" class="p-6">
           <!-- Variants table (always shown if variants exist) -->
           <div v-if="product.variants?.length" class="mb-6">
             <h3 class="font-display font-bold text-gray-800 mb-3 text-sm flex items-center gap-2">
@@ -466,7 +471,7 @@
         </div>
 
         <!-- ── Reviews ── -->
-        <div v-if="activeTab === tr('রিভিউ')" id="reviews" class="p-6">
+        <div v-if="activeTab === 'reviews'" id="reviews" class="p-6">
           <div v-if="loadingReviews" class="text-center py-8">
             <span class="mi animate-spin text-primary text-3xl">refresh</span>
           </div>
@@ -684,7 +689,7 @@
         </div>
 
         <!-- ── Delivery tab ── -->
-        <div v-if="activeTab === tr('ডেলিভারি তথ্য')" class="p-6 space-y-4">
+        <div v-if="activeTab === 'delivery'" class="p-6 space-y-4">
           <div v-for="d in deliveryDetails" :key="d.title" class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
             <span class="mi text-2xl text-primary shrink-0">{{ d.icon }}</span>
             <div>
@@ -825,7 +830,7 @@ const activeImgIdx = ref(0)
 const selectedVariant = ref(null)
 const qty = ref(1)
 const addingToCart = ref(false)
-const activeTab = ref('বিস্তারিত তথ্য')
+const activeTab = ref('description')
 const descriptionText   = computed(() => product.value?.description || product.value?.description_bn || '')
 const descriptionIsHtml = computed(() => /<\/?[a-z][\s\S]*>/i.test(descriptionText.value))
 const canReview = ref(false)
@@ -1325,10 +1330,10 @@ const relatedProducts = ref([])
 
 // ── Static content ────────────────────────────────────────────────────────
 const tabs = [
-  {label: 'বিস্তারিত তথ্য', icon: 'info'},
-  {label: 'স্পেসিফিকেশন', icon: 'list_alt'},
-  {label: 'রিভিউ', icon: 'rate_review'},
-  {label: 'ডেলিভারি তথ্য', icon: 'local_shipping'},
+  {key: 'description', label: 'বিস্তারিত তথ্য', icon: 'info'},
+  {key: 'specs', label: 'স্পেসিফিকেশন', icon: 'list_alt'},
+  {key: 'reviews', label: 'রিভিউ', icon: 'rate_review'},
+  {key: 'delivery', label: 'ডেলিভারি তথ্য', icon: 'local_shipping'},
 ]
 const deliveryInfo = [
   //{icon: 'local_shipping', title: 'ঢাকায় আজই ডেলিভারি', desc: 'সকাল ১১টার আগে অর্ডার করুন', badge: 'বিনামূল্যে'},
@@ -1343,7 +1348,7 @@ const deliveryDetails = [
   {
     icon: 'cached',
     title: 'রিটার্ন পলিসি',
-    desc: 'পণ্য পেয়ে ৭ দিনের মধ্যে সমস্যা জানান। ক্ষতিগ্রস্ত বা ভুল পণ্য হলে বিনামূল্যে রিটার্ন।'
+    desc: 'পণ্য পেয়ে ২ দিনের মধ্যে সমস্যা জানান। ক্ষতিগ্রস্ত বা ভুল পণ্য হলে বিনামূল্যে রিটার্ন।'
   },
 ]
 

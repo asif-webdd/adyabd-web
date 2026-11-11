@@ -74,6 +74,12 @@
           </div>
         </div>
         <NuxtPage />
+
+        <!-- Logout (mobile / tablet: the sidebar is hidden there) -->
+        <button @click="authStore.logout()"
+                class="lg:hidden w-full mt-6 flex items-center justify-center gap-2 px-4 py-3 bg-white rounded-2xl shadow-card text-accent font-bengali font-semibold text-sm active:bg-accent/10">
+          <span class="mi">logout</span> {{ tr('লগআউট করুন') }}
+        </button>
       </div>
     </div>
   </div>
