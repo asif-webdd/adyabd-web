@@ -61,6 +61,7 @@ class SellerPublicApiController extends Controller
                 'shop_name'    => $seller->shop_name,
                 'shop_slug'    => $seller->slug,
                 'description'  => $seller->description,
+                // full URLs (the DB holds relative paths such as sellers/logos/x.jpg)
                 'logo'         => $seller->logo ? $seller->logo_url : null,
                 'banner'       => $seller->banner ? (str_starts_with($seller->banner, 'http') ? $seller->banner : storage_url($seller->banner)) : null,
                 'address'      => $seller->address,
@@ -226,6 +227,9 @@ class SellerPublicApiController extends Controller
             'id'               => $product->id,
             'slug'             => $product->slug,
             'sku'              => $product->sku,
+            'quantity'         => (int) $product->quantity,
+            'has_variants'     => (bool) $product->has_variants,
+            'compare_price'    => $product->compare_price,
 
             // Names
             'name'             => $product->name,

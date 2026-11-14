@@ -2,7 +2,7 @@
   <section>
     <div class="flex items-center justify-between mb-5">
       <h2 class="section-title">{{ tr('ক্যাটাগরি অনুযায়ী কেনাকাটা') }}</h2>
-      <NuxtLink to="/search" class="text-primary font-bengali text-sm font-medium flex items-center gap-1 hover:underline">
+      <NuxtLink to="/products" class="text-primary font-bengali text-sm font-medium flex items-center gap-1 hover:underline">
         {{ tr('সব দেখুন') }} <span class="mi mi-sm">arrow_forward</span>
       </NuxtLink>
     </div>
