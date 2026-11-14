@@ -104,7 +104,7 @@ class SellerPublicApiController extends Controller
             ->where('is_active', true)
             ->with([
                 'primaryImage', 'category:id,name', 'brand:id,name', 'seller:id,shop_name,shop_name_bn',
-            ])->withCount('reviews')->withAvg('reviews', 'rating');
+            ])->withCount(['reviews', 'variants'])->withAvg('reviews', 'rating');
 
         if ($search = $request->get('search')) {
             $query->where('name', 'like', "%{$search}%");
@@ -228,7 +228,7 @@ class SellerPublicApiController extends Controller
             'slug'             => $product->slug,
             'sku'              => $product->sku,
             'quantity'         => (int) $product->quantity,
-            'has_variants'     => (bool) $product->has_variants,
+            'has_variants'     => (bool) $product->has_variants || (int) ($product->variants_count ?? 0) > 0,
             'compare_price'    => $product->compare_price,
 
             // Names
