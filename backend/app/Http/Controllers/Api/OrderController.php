@@ -128,6 +128,7 @@ class OrderController extends Controller
                     $subtotal += $total;
                     $itemsData[] = [
                         '_seller_id'      => $product->seller_id,
+                        '_category_id'    => $product->category_id,
                         'flash_sale_product_id' => $flash?->id,
                         'user_id'         => $user->id,
                         'product_id'      => $product->id,
@@ -146,6 +147,7 @@ class OrderController extends Controller
 
                 // ── Coupon (validated, not silently ignored) ──────────────────────
                 $couponDiscount = 0;
+                $freeShipping = false;
                 $coupon = null;
                 $eligibleSubtotal = 0.0;
                 if ($request->filled('coupon_code')) {
@@ -167,18 +169,25 @@ class OrderController extends Controller
                             throw new \DomainException('You have already used this coupon the maximum number of times.');
                         }
                     }
-                    // A coupon created for one seller only applies to that seller's products.
-                    $eligibleSubtotal = $coupon->seller_id
-                        ? (float) collect($itemsData)->where('_seller_id', $coupon->seller_id)->sum('total_price')
-                        : (float) $subtotal;
-                    if ($coupon->seller_id && $eligibleSubtotal <= 0) {
-                        throw new \DomainException('This coupon is only valid for products of a specific seller.');
+                    // Eligible lines: coupon's seller + selected products / categories.
+                    $eligibleRows = collect($itemsData)->filter(fn($r) => $coupon->appliesToItem($r['product_id'], $r['_category_id'] ?? null, $r['_seller_id'] ?? null));
+                    $eligibleSubtotal = (float) $eligibleRows->sum('total_price');
+                    if ($eligibleSubtotal <= 0) {
+                        throw new \DomainException('This coupon does not apply to the products in your cart.');
                     }
-                    $couponDiscount = $coupon->calculateDiscount($eligibleSubtotal);
-                    if ($couponDiscount <= 0) {
-                        throw new \DomainException('This coupon does not apply to your order (minimum amount not reached).');
+                    $freeShipping = $coupon->type === 'free_ship';
+                    if ($freeShipping) {
+                        if ($eligibleSubtotal < (float) $coupon->min_order_amount) {
+                            throw new \DomainException('This coupon does not apply to your order (minimum amount not reached).');
+                        }
+                        $couponDiscount = 0.0;
+                    } else {
+                        $couponDiscount = $coupon->calculateDiscount($eligibleSubtotal);
+                        if ($couponDiscount <= 0) {
+                            throw new \DomainException('This coupon does not apply to your order (minimum amount not reached).');
+                        }
+                        $couponDiscount = min($couponDiscount, $eligibleSubtotal);
                     }
-                    $couponDiscount = min($couponDiscount, $eligibleSubtotal);
                     $coupon->increment('used_count');
                 }
 
@@ -193,19 +202,21 @@ class OrderController extends Controller
 
                 $plans = [];
                 $allocated = 0.0;
-                $lastKey = $groups->keys()->last();
+                // last group that holds eligible items takes the rounding remainder
+                $eligibleLastKey = $coupon ? $groups->filter(fn($rows) => $rows->contains(fn($r) => $coupon->appliesToItem($r['product_id'], $r['_category_id'] ?? null, $r['_seller_id'] ?? null)))->keys()->last() : null;
                 foreach ($groups as $sellerKey => $rows) {
                     $gSub = (float) $rows->sum('total_price');
-                    // Coupon discount is shared between the orders in proportion to their value.
-                    $eligible = !$coupon?->seller_id || (int) $coupon->seller_id === (int) $sellerKey;
-                    if (!$eligible) {
+                    // Coupon discount is shared between the orders in proportion to their eligible value.
+                    $gElig = $coupon
+                        ? (float) $rows->filter(fn($r) => $coupon->appliesToItem($r['product_id'], $r['_category_id'] ?? null, $r['_seller_id'] ?? null))->sum('total_price')
+                        : 0.0;
+                    if ($gElig <= 0 || $couponDiscount <= 0) {
                         $gDisc = 0.0;
                     } else {
-                        $base  = $coupon?->seller_id ? $eligibleSubtotal : $subtotal;
-                        $isLastEligible = $coupon?->seller_id ? true : ($sellerKey === $lastKey);
+                        $isLastEligible = $sellerKey === $eligibleLastKey;
                         $gDisc = $isLastEligible
                             ? round($couponDiscount - $allocated, 2)
-                            : round($couponDiscount * $gSub / max($base, 0.01), 2);
+                            : round($couponDiscount * $gElig / max($eligibleSubtotal, 0.01), 2);
                         $allocated += $gDisc;
                     }
 
@@ -220,6 +231,10 @@ class OrderController extends Controller
                                 $address->upazila?->name,
                             ),
                     };
+
+                    if ($freeShipping && $gElig > 0) {
+                        $gShip = 0.0; // free-shipping coupon waives the delivery charge of this shipment
+                    }
 
                     $net = $gSub - $gDisc;
                     $rate = $sellerKey ? (float) ($sellers[$sellerKey]->commission_rate ?? $globalRate) : 0.0;
@@ -334,31 +349,6 @@ class OrderController extends Controller
             }
         }
         Cart::where('user_id', $user->id)->delete();
-
-
-        // ── Server-side tracking (Purchase): response পাঠানোর পরে চলে ──
-        // ZiniPay বাদ: ওই অর্ডারে ক্রেতা পেমেন্ট পেজে চলে যায়, পেমেন্ট নিশ্চিত হওয়ার আগে Purchase পাঠানো ঠিক না।
-        if ($request->payment_method !== 'zinipay') {
-            try {
-                $tracking = app(\App\Services\TrackingService::class);
-                $context  = $tracking->contextFromRequest($request);
-                $purchase = $tracking->purchaseFromOrders($orders, $user, $context);
-
-                try {
-                    \App\Models\Order::whereIn('id', collect($orders)->pluck('id'))
-                        ->update(['tracking_context' => json_encode($context)]);
-                } catch (\Throwable $e) {
-                    report($e);
-                }
-
-                dispatch(function () use ($purchase) {
-                    app(\App\Services\TrackingService::class)->sendPurchase($purchase);
-                })->afterResponse();
-            } catch (\Throwable $e) {
-                report($e);
-            }
-        }
-
 
         // The first order keeps the old response shape; extra fields describe the whole checkout.
         $data = $orders[0]->fresh()->load('items', 'statusHistories')->toArray();

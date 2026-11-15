@@ -107,14 +107,19 @@ class CartController extends Controller
         if (!$coupon || !$coupon->isValid()) return $this->error('Coupon code is invalid or expired.', 422);
 
         $cart = Cart::where('user_id', $request->user()->id)->with(['product', 'variant'])->get();
-        $subtotal = $cart->sum(fn($c) => \App\Models\FlashSaleProduct::currentPrice($c->product, $c->variant) * $c->quantity);
+        $line = fn($c) => \App\Models\FlashSaleProduct::currentPrice($c->product, $c->variant) * $c->quantity;
+        $subtotal = $cart->sum($line);
+        $eligible = $cart->filter(fn($c) => $coupon->appliesToItem($c->product_id, $c->product?->category_id, $c->product?->seller_id))->sum($line);
 
-        if ($subtotal < $coupon->min_order_amount) {
-            return $this->error("A minimum order of \${$coupon->min_order_amount} is required to use this coupon.", 422);
+        if ($eligible <= 0) {
+            return $this->error('This coupon does not apply to the products in your cart.', 422);
+        }
+        if ($eligible < $coupon->min_order_amount) {
+            return $this->error("A minimum order of {$coupon->min_order_amount} is required on the eligible products to use this coupon.", 422);
         }
 
-        $discount = $coupon->calculateDiscount($subtotal);
-        return $this->success(['coupon' => $coupon, 'discount' => $discount, 'new_total' => $subtotal - $discount], 'Coupon applied successfully!');
+        $discount = min($coupon->calculateDiscount($eligible), $eligible);
+        return $this->success(['coupon' => $coupon, 'discount' => $discount, 'free_shipping' => $coupon->type === 'free_ship', 'new_total' => $subtotal - $discount], 'Coupon applied successfully!');
     }
 
 }

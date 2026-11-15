@@ -59,6 +59,11 @@ class CouponResource extends Resource
                     )
                     ->helperText('Uppercase letters and numbers only. Auto-generated or custom.'),
 
+                TextInput::make('title')
+                    ->label('Title')
+                    ->maxLength(255)
+                    ->placeholder('Optional, e.g. Eid Offer'),
+
                 TextInput::make('description')
                     ->label('Description')
                     ->maxLength(255)
@@ -77,7 +82,7 @@ class CouponResource extends Resource
 
                 TextInput::make('value')
                     ->label(fn ($get) => $get('type') === 'percentage' ? 'Discount (%)' : 'Discount Amount (BDT )')
-                    ->required()
+                    ->required(fn ($get) => $get('type') !== 'free_ship')
                     ->numeric()
                     ->minValue(0)
                     ->maxValue(fn ($get) => $get('type') === 'percentage' ? 100 : null)
@@ -160,20 +165,29 @@ class CouponResource extends Resource
                         'products'   => 'Specific Products',
                     ])
                     ->default('all')
-                    ->reactive(),
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(fn ($set) => $set('applicable_ids', [])),
 
                 Select::make('applicable_ids')
-                    ->label('Select Categories / Products')
+                    ->label(fn ($get) => $get('applicable_to') === 'categories' ? 'Select Categories' : 'Select Products')
                     ->multiple()
                     ->searchable()
+                    ->preload(fn ($get) => $get('applicable_to') === 'categories')
+                    ->required(fn ($get) => in_array($get('applicable_to'), ['categories', 'products']))
                     ->visible(fn ($get) => in_array($get('applicable_to'), ['categories', 'products']))
-                    ->options(function ($get) {
-                        if ($get('applicable_to') === 'categories') {
-                            return \App\Models\Category::pluck('name', 'id');
-                        }
-                        return \App\Models\Product::pluck('name', 'id');
-                    }),
-            ])->columns(2)->collapsed(),
+                    ->options(fn ($get) => $get('applicable_to') === 'categories'
+                        ? \App\Models\Category::orderBy('name')->pluck('name', 'id')
+                        : [])
+                    ->getSearchResultsUsing(fn (string $search, $get) => $get('applicable_to') === 'categories'
+                        ? \App\Models\Category::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')
+                        : \App\Models\Product::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id'))
+                    ->getOptionLabelsUsing(fn (array $values, $get) => $get('applicable_to') === 'categories'
+                        ? \App\Models\Category::whereIn('id', $values)->pluck('name', 'id')->all()
+                        : \App\Models\Product::whereIn('id', $values)->pluck('name', 'id')->all())
+                    ->columnSpanFull()
+                    ->helperText('Coupon discount is calculated only on the selected items in the cart.'),
+            ])->columns(2),
         ]);
     }
 
