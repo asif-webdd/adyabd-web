@@ -39,7 +39,7 @@
           <img :src="order.items?.[0]?.product_image ? order.items[0].product_image : '/images/placeholder.svg'" :alt="order.items?.[0]?.product_name" class="w-12 h-12 object-cover rounded-xl bg-gray-50 shrink-0"/>
           <div class="flex-1 min-w-0">
             <p class="font-bengali font-semibold text-gray-800 text-sm line-clamp-1">{{ order.items?.[0]?.product_name }}</p>
-            <p class="font-bengali text-xs text-gray-400">অর্ডার #{{ order.order_number }} · {{ formatDate(order.created_at) }}</p>
+            <p class="font-bengali text-xs text-gray-400">{{ tr('অর্ডার') }} #{{ order.order_number }} · {{ formatDate(order.created_at) }}</p>
           </div>
           <div class="text-right shrink-0">
             <p class="font-display font-bold text-accent">৳{{ Number(order.total_amount).toLocaleString() }}</p>

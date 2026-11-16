@@ -65,6 +65,24 @@
 .mi-lg { font-size: 32px; }
 .mi-xl { font-size: 48px; }
 
+
+/* Icon font load howar age: naam-er text na dekhiye skeleton box dekhao */
+html:not(.icons-ready) .mi {
+  color: transparent !important;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: icon-skeleton 1.2s ease-in-out infinite;
+}
+@keyframes icon-skeleton {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ── Base ───────────────────────────────────────────────────────────────── */
 @layer base {
   html {

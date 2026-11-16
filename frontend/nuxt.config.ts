@@ -55,6 +55,14 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap',
         },
       ],
+      script: [
+        {
+          innerHTML: `(function(){var d=document.documentElement,done=function(){d.classList.add('icons-ready')};
+            try{document.fonts.load('24px "Material Symbols Rounded"','shopping_cart').then(done,done)}catch(e){done()}
+            setTimeout(done,4000)})()`,
+          tagPosition: 'head',
+        },
+      ],
     },
   },
 })

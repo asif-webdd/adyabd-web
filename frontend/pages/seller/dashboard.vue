@@ -21,7 +21,7 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div v-for="c in cards" :key="c.label" class="bg-white rounded-2xl shadow-card p-4 text-center">
           <p class="font-display font-bold text-xl text-gray-800">{{ c.value }}</p>
-          <p class="text-xs text-gray-500">{{ c.label }}</p>
+          <p class="text-xs text-gray-500">{{ tr(c.label) }}</p>
         </div>
       </div>
 
@@ -30,7 +30,7 @@
         <button v-for="t in tabs" :key="t.key" @click="tab = t.key"
                 class="px-4 py-2 rounded-full text-sm border-2 transition-colors"
                 :class="tab === t.key ? 'bg-primary text-white border-primary' : 'border-gray-200 text-gray-600 hover:border-primary'">
-          {{ t.label }}
+          {{ tr(t.label) }}
           <span v-if="t.key === 'notifications' && unread > 0" class="ml-1 bg-red-500 text-white text-[10px] rounded-full px-1.5 py-0.5">{{ unread }}</span>
         </button>
       </div>
@@ -116,7 +116,7 @@
 
           <p class="text-xs text-gray-400 mt-2">{{ tr('নতুন পণ্য অ্যাডমিনের অনুমোদনের পর সাইটে দেখা যাবে।') }}</p>
           <button @click="addProduct" :disabled="saving" class="btn-primary mt-3 disabled:opacity-60">
-            {{ saving ? 'জমা হচ্ছে...' : 'পণ্য জমা দিন' }}
+            {{ saving ? 'জমা হচ্ছে...' : tr('পণ্য জমা দিন') }}
           </button>
         </div>
 
