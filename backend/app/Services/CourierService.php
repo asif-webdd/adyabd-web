@@ -12,7 +12,7 @@ class CourierService
     {
         //dd($merchant->toArray(), $order->toArray());
         return match (strtolower($merchant->slug)) {
-            'steadfast-courier' => $this->steadFast($merchant, $order),
+            'steadfast', 'steadfast-courier' => $this->steadFast($merchant, $order),
             'pathao'            => $this->pathao($merchant, $order),
             'redx'              => $this->redx($merchant, $order),
             'paperfly'          => $this->paperfly($merchant, $order),
@@ -27,7 +27,7 @@ class CourierService
      */
     public function fetchStatus(CourierMerchant $merchant, Order $order): ?string
     {
-        if (strtolower($merchant->slug) !== 'steadfast-courier' || !$order->courier_tracking_id) {
+        if (!in_array(strtolower($merchant->slug), ['steadfast', 'steadfast-courier'], true) || !$order->courier_tracking_id) {
             return null;
         }
         try {
@@ -46,37 +46,56 @@ class CourierService
     private function steadFast(CourierMerchant $merchant, Order $order): array
     {
         try {
-            $response = Http::withHeaders([
-                'Api-Key'    => $merchant->api_key,
-                'Secret-Key' => $merchant->api_secret
-            ])->post($merchant->base_url . '/create_order', [
-                'invoice'           => $order->order_number,
-                'recipient_name'    => $order->shipping_name,
-                'recipient_phone'   => $order->shipping_phone,
-                'recipient_email'   => $order->user->email,
-                'recipient_address' => $order->shipping_address . ', ' . $order->shipping_district,
-                'cod_amount'        => $order->payment_method === 'cod' ? $order->total_amount : 0,
-                'item_description'  => '',
-                'delivery_type'     => 1,
-                'note'              => $order->customer_note ?? '',
-            ]);
+            // SteadFast (Packzy) wants an 11-digit local number: 01XXXXXXXXX
+            $phone = preg_replace('/\D+/', '', (string) $order->shipping_phone);
+            $phone = preg_replace('/^(?:00)?880/', '0', $phone);
+            if (strlen($phone) === 10 && $phone[0] === '1') {
+                $phone = '0' . $phone;
+            }
+
+            $payload = [
+                'invoice'           => preg_replace('/[^A-Za-z0-9_-]/', '', (string) $order->order_number),
+                'recipient_name'    => mb_substr((string) $order->shipping_name, 0, 100),
+                'recipient_phone'   => $phone,
+                'recipient_address' => mb_substr(trim($order->shipping_address . ', ' . $order->shipping_district, ', '), 0, 250),
+                'cod_amount'        => $order->payment_method === 'cod' ? (int) round($order->total_amount) : 0,
+                'note'              => mb_substr((string) ($order->customer_note ?? ''), 0, 250),
+                'item_description'  => mb_substr($order->items->pluck('product_name')->implode(', '), 0, 250),
+                'total_lot'         => (int) $order->items->sum('quantity'),
+                'delivery_type'     => 0, // 0 = home delivery, 1 = point delivery
+            ];
+            $email = $order->user->email ?? null;
+            if ($email) {
+                $payload['recipient_email'] = $email;
+            }
+
+            $response = Http::acceptJson()->withHeaders([
+                'Api-Key'    => trim((string) $merchant->api_key),
+                'Secret-Key' => trim((string) $merchant->api_secret),
+            ])->post(rtrim($merchant->base_url, '/') . '/create_order', $payload);
+
             $decodeResponse = $response->json();
             if ($response->successful() && isset($decodeResponse['consignment']['tracking_code'])) {
                 return [
                     'success'      => true,
                     'tracking_id'  => $decodeResponse['consignment']['tracking_code'],
-                    'tracking_url' => 'https://steadfast.com.bd/tl/' . $decodeResponse['consignment']['tracking_code'],
+                    'tracking_url' => 'https://steadfast.com.bd/t/' . $decodeResponse['consignment']['tracking_code'],
                     'courier_name' => 'SteadFast',
-                    'raw'          => $decodeResponse
+                    'raw'          => $decodeResponse,
                 ];
             }
-            return ['success' => false, 'message' => $decodeResponse['message'] ?? 'SteadFast booking failed', 'raw' => $decodeResponse];
+
+            // show the real reason (field-level validation errors included)
+            $msg = $decodeResponse['message'] ?? 'SteadFast booking failed';
+            if (!empty($decodeResponse['errors']) && is_array($decodeResponse['errors'])) {
+                $msg .= ': ' . collect($decodeResponse['errors'])->flatten()->implode(', ');
+            }
+            Log::warning('SteadFast booking failed', ['status' => $response->status(), 'payload' => $payload, 'response' => $decodeResponse]);
+
+            return ['success' => false, 'message' => $msg, 'raw' => $decodeResponse];
         } catch (Exception $e) {
             Log::error('SteadFast error: ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 

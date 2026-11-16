@@ -57,30 +57,45 @@ class PaymentService
         }
 
         try {
+            // ZiniPay needs a name + email even when the customer registered with a phone only -> safe fallbacks.
+            $custName  = trim((string) $custName) !== '' ? trim((string) $custName) : 'Customer';
+            $custEmail = filter_var($custEmail, FILTER_VALIDATE_EMAIL) ? $custEmail : 'customer@' . (parse_url($redirectUrl, PHP_URL_HOST) ?: 'adyabd.com');
+
+            // metadata: flat key => string values only (nested arrays can be rejected as "Invalid request data")
+            $flatMeta = [];
+            foreach ($metadata as $k => $v) {
+                $flatMeta[$k] = is_array($v) ? implode(',', $v) : (string) $v;
+            }
+
             $payload = array_filter([
-                'cus_name'     => $custName,
+                'cus_name'     => mb_substr($custName, 0, 100),
                 'cus_email'    => $custEmail,
-                'amount'       => $amount,
-                'metadata'     => !empty($metadata) ? $metadata : null,
+                'amount'       => round($amount, 2),
+                'metadata'     => !empty($flatMeta) ? $flatMeta : null,
                 'redirect_url' => $redirectUrl,
                 'cancel_url'   => $cancelUrl,
                 'webhook_url'  => $this->zinipayWebhookUrl(),
-            ], fn($v) => $v !== null);
+            ], fn($v) => $v !== null && $v !== '');
 
-            $r = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'zini-api-key' => $apiKey,
+            $r = Http::acceptJson()->asJson()->withHeaders([
+                'zini-api-key' => trim((string) $apiKey),
             ])->post($this->zinipayBaseUrl() . '/v1/payment/create', $payload);
 
             $d = $r->json();
             $paymentUrl = $d['payment_url'] ?? null;
             $invoiceId  = $paymentUrl ? basename(rtrim($paymentUrl, '/')) : null;
 
+            $ok = (bool) ($d['status'] ?? false) && $paymentUrl;
+            if (!$ok) {
+                // full request/response in storage/logs/laravel.log to see exactly what ZiniPay rejected
+                Log::warning('ZiniPay create invoice failed', ['http' => $r->status(), 'payload' => $payload, 'response' => $d ?? $r->body()]);
+            }
+
             return [
-                'success'     => (bool)($d['status'] ?? false) && $paymentUrl,
+                'success'     => $ok,
                 'payment_url' => $paymentUrl,
                 'invoice_id'  => $invoiceId,
-                'message'     => $d['message'] ?? null,
+                'message'     => ($d['message'] ?? null) ?: ($ok ? null : 'ZiniPay error (HTTP ' . $r->status() . ')'),
                 'raw'         => $d,
             ];
         } catch (\Exception $e) {
