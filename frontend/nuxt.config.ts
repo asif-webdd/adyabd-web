@@ -57,9 +57,13 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          innerHTML: `(function(){var d=document.documentElement,done=function(){d.classList.add('icons-ready')};
-            try{document.fonts.load('24px "Material Symbols Rounded"','shopping_cart').then(done,done)}catch(e){done()}
-            setTimeout(done,4000)})()`,
+          innerHTML: `(function(){var d=document.documentElement,n=0;
+function ok(){var s=document.createElement('span');s.textContent='shopping_cart';
+s.style.cssText="position:absolute;visibility:hidden;white-space:nowrap;font-size:24px;font-family:'Material Symbols Rounded'";
+document.body.appendChild(s);var w=s.offsetWidth;document.body.removeChild(s);return w<60}
+function tick(){if(!document.body){return setTimeout(tick,30)}
+if(ok()||++n>200){d.classList.add('icons-ready')}else{setTimeout(tick,50)}}
+tick()})()`,
           tagPosition: 'head',
         },
       ],
