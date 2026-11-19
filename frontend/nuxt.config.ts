@@ -52,7 +52,7 @@ export default defineNuxtConfig({
         // Icons: display=block thak (icon-er naam text jeno na dekhay, amader skeleton ache). Non-blocking load.
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block',
+          href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap',
           media: 'print',
           onload: "this.media='all'",
         },
@@ -66,8 +66,8 @@ export default defineNuxtConfig({
       ],
       // JS off hole-o font load hoy
       noscript: [
-        { innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap">' },
-        { innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">' },
+        //{ innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap">' },
+        //{ innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">' },
       ],
       script: [
         {

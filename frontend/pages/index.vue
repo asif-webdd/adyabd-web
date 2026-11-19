@@ -7,7 +7,7 @@
     <!-- ─── Hero Slider + Promo Top ─────────────────────── -->
     <template v-if="hero.show_hero">
       <SkHeroBanner v-if="pending.hero" />
-      <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div v-else class="cus-hero-slider grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         <!-- Hero Slider -->
         <div :class="hero.show_promo_top ? 'lg:col-span-2' : 'lg:col-span-3'">
@@ -220,6 +220,11 @@
 </template>
 
 <style scoped>
+.cus-hero-slider{
+  margin-top: 0px !important;
+}
+
+
 @media screen and (max-width: 767px){
   .cus-payment-menthods-sec{
     padding: 20px;
