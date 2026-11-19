@@ -8,21 +8,33 @@
 
           <!-- Background Image -->
           <div class="absolute inset-0">
-            <picture>
-              <source
-                media="(max-width: 767px)"
-                :srcset="slide.mobile_image"
-              />
+            
+          <picture>
+            <source
+              media="(max-width: 767px)"
+              :srcset="slide.mobile_image
+                ? slide.mobile_image.replace(
+                    'https://cdn.adyabd.com/banners/',
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=768,quality=80,format=auto/banners/'
+                  )
+                : ''"
+            />
 
-              <img
-                :src="slide.image"
-                :alt="slide.title"
-                class="w-full h-full object-cover"
-                :loading="index === 0 ? 'eager' : 'lazy'"
-                :fetchpriority="index === 0 ? 'high' : 'auto'"
-                decoding="async"
-              />
-            </picture>
+            <img
+              :src="slide.image
+                ? slide.image.replace(
+                    'https://cdn.adyabd.com/banners/',
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=1920,quality=80,format=auto/banners/'
+                  )
+                : ''"
+              :alt="slide.title"
+              class="w-full h-full object-cover"
+              :loading="index === 0 ? 'eager' : 'lazy'"
+              :fetchpriority="index === 0 ? 'high' : 'auto'"
+              decoding="async"
+            />
+          </picture>
+
 
             <!-- Gradient overlay -->
             <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20"></div>

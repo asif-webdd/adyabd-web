@@ -4,7 +4,20 @@
             class="flex gap-4 bg-white rounded-ap p-3 shadow-card hover:shadow-card-hover transition-all duration-200 group">
 
     <div class="relative shrink-0 w-24 h-24 rounded-ap-sm overflow-hidden bg-gray-50">
-      <img :src="product.image || '/images/placeholder.svg'" @error="$event.target.src='/images/placeholder.svg'" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+      
+    <img
+      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
+        ? product.image.replace(
+            'https://cdn.adyabd.com/products/',
+            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
+          )
+        : (product.image || '/images/placeholder.svg')"
+      @error="$event.target.src='/images/placeholder.svg'"
+      :alt="product.name"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+
       <span v-if="product.discount" class="absolute top-1 left-1 badge bg-accent text-white text-[10px] px-1.5 py-0.5">{{ product.discount }}%</span>
     </div>
 
@@ -46,7 +59,20 @@
             class="product-card group block">
 
     <div class="relative overflow-hidden bg-gray-50" style="aspect-ratio:1">
-      <img :src="product.image || '/images/placeholder.svg'" @error="$event.target.src='/images/placeholder.svg'" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+      
+    <img
+      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
+        ? product.image.replace(
+            'https://cdn.adyabd.com/products/',
+            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
+          )
+        : (product.image || '/images/placeholder.svg')"
+      @error="$event.target.src='/images/placeholder.svg'"
+      :alt="product.name"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+
       <div class="absolute top-1.5 left-1.5 flex flex-col gap-1">
         <span v-if="product.discount" class="badge bg-accent text-white text-[10px] px-1.5 py-0.5">{{ product.discount }}%</span>
         <span v-if="product.isNew" class="badge bg-primary text-white text-[10px] px-1.5 py-0.5">{{ tr('নতুন') }}</span>
@@ -83,7 +109,20 @@
             class="product-card group block">
 
     <div class="relative overflow-hidden bg-gray-50" style="aspect-ratio:1">
-      <img :src="product.image || '/images/placeholder.svg'" @error="$event.target.src='/images/placeholder.svg'" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+      
+    <img
+      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
+        ? product.image.replace(
+            'https://cdn.adyabd.com/products/',
+            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
+          )
+        : (product.image || '/images/placeholder.svg')"
+      @error="$event.target.src='/images/placeholder.svg'"
+      :alt="product.name"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+
       <div class="absolute top-2 left-2 flex flex-col gap-1">
         <span v-if="product.discount" class="badge bg-accent text-white">{{ product.discount }}% ছাড়</span>
         <span v-if="product.isNew" class="badge bg-primary text-white">{{ tr('নতুন') }}</span>
@@ -148,7 +187,20 @@
             class="product-card group block">
 
     <div class="relative overflow-hidden bg-gray-50 aspect-square">
-      <img :src="product.image || '/images/placeholder.svg'" @error="$event.target.src='/images/placeholder.svg'" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"/>
+      
+    <img
+      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
+        ? product.image.replace(
+            'https://cdn.adyabd.com/products/',
+            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
+          )
+        : (product.image || '/images/placeholder.svg')"
+      @error="$event.target.src='/images/placeholder.svg'"
+      :alt="product.name"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+
       <div class="absolute top-2 left-2 flex flex-col gap-1">
         <span v-if="product.discount" class="badge bg-accent text-white">{{ product.discount }}% ছাড়</span>
         <span v-if="product.isNew" class="badge bg-primary text-white">{{ tr('নতুন') }}</span>
