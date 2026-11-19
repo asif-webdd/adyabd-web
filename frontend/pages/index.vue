@@ -1,6 +1,6 @@
 <template>
   <div :class="[containerWidth, 'mx-auto px-4 py-6 pb-0 md:pb-8 space-y-10']">
-
+    <h1 class="sr-only">{{ shopName }}{{ _footer.tagline ? ' — ' + _footer.tagline : '' }}</h1>
     <!-- ─── Popup Banner ─────────────────────────────────── -->
     <PopupBanner v-if="sections.show_popup_banner" :banner="activePopup" :delay="popup.delay" :frequency="popup.frequency" :allow-dismiss-forever="popup.allow_dismiss_forever"/>
 
@@ -254,17 +254,41 @@ const { shopName } = useShopName()
 const { footer: _footer } = useAppearance()
 const _siteUrl = useRuntimeConfig().public.siteUrl   // read in setup: useHead getters run later, outside the Nuxt context
 // Home-page SEO (name + tagline come from Admin → Settings / Appearance)
+
+// Logo: admin theke upload kora logo thakle seta, na hole /images/logo.png (ei file public/images-e rakho)
+const { logo: _logo } = useAppearance()
 useHead(() => {
-  const title = _footer.value.tagline ? `${shopName.value} — ${_footer.value.tagline}` : shopName.value
+  const name = shopName.value
+  const title = _footer.value.tagline ? `${name} — ${_footer.value.tagline}` : name
+  const desc = _footer.value.tagline || `${name} — বাংলাদেশের অনলাইন মার্কেটপ্লেস। সেরা দামে পণ্য কিনুন, দ্রুত ডেলিভারি ও নিরাপদ পেমেন্ট।`
+  const logoUrl = (_logo?.value && String(_logo.value).startsWith('http')) ? _logo.value : _siteUrl + '/images/logo.png'
   return {
     title,
     meta: [
-      { name: 'description', content: _footer.value.tagline || shopName.value },
+      { name: 'description', content: desc },
       { property: 'og:title', content: title },
-      { property: 'og:site_name', content: shopName.value },
+      { property: 'og:description', content: desc },
+      { property: 'og:site_name', content: name },
       { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: _siteUrl + '/' },
+      { property: 'og:image', content: logoUrl },
+      { property: 'og:locale', content: 'bn_BD' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: desc },
     ],
     link: [{ rel: 'canonical', href: _siteUrl + '/' }],
+    script: [{
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          { '@type': 'Organization', name, url: _siteUrl, logo: logoUrl },
+          { '@type': 'WebSite', name, url: _siteUrl,
+            potentialAction: { '@type': 'SearchAction', target: _siteUrl + '/search?q={search_term_string}', 'query-input': 'required name=search_term_string' } },
+        ],
+      }),
+    }],
   }
 })
 

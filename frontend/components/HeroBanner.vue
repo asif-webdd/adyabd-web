@@ -5,17 +5,35 @@
     <div class="relative w-full h-full" @mouseenter="pauseAuto" @mouseleave="resumeAuto">
       <transition-group name="slide-fade" tag="div">
         <div v-for="(slide, index) in sliders" v-show="currentIndex === index" :key="slide.id" class="absolute inset-0 w-full min-h-[320px] md:min-h-[420px] flex items-center">
+
           <!-- Background Image -->
           <div class="absolute inset-0">
             <picture>
-              <source :media="'(max-width: 767px)'" :srcset="slide.mobile_image" />
-              <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover" />
+              <source
+                media="(max-width: 767px)"
+                :srcset="slide.mobile_image"
+              />
+
+              <img
+                :src="slide.image"
+                :alt="slide.title"
+                class="w-full h-full object-cover"
+                :loading="index === 0 ? 'eager' : 'lazy'"
+                :fetchpriority="index === 0 ? 'high' : 'auto'"
+                decoding="async"
+              />
             </picture>
+
             <!-- Gradient overlay -->
             <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20"></div>
+
             <!-- Subtle dot pattern -->
-            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+            <div
+              class="absolute inset-0 opacity-10"
+              style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E');"
+            ></div>
           </div>
+
 
           <!-- Content -->
           <div class="relative z-10 w-full px-6 py-10 md:px-14 md:py-14 text-white">

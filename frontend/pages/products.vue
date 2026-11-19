@@ -222,9 +222,56 @@ const clearFilters = () => {
   applyFilters()
 }
 
-useHead(computed(() => ({
-  title: `${tr('All Products')} — ${shopName.value}`,
-})))
+
+const _siteUrl = useRuntimeConfig().public.siteUrl
+useHead(computed(() => {
+  const name = shopName.value
+  const title = `${tr('All Products')} — ${name}`
+
+  // top-level category-r naam theke dynamic description (max 6ta, description lomba na hoye jay)
+  const catNames = categories.value.slice(0, 6).map(catLabel).filter(Boolean)
+  const catText = catNames.length ? catNames.join(', ') : 'বেল্ট, ওয়ালেট, ঘড়ি, জুতা, ইলেকট্রনিক্স ও কিচেন আইটেম'
+  const desc = `${name}-এ সব পণ্য দেখুন: ${catText}। সেরা দামে কিনুন, সারা বাংলাদেশে ডেলিভারি।`.slice(0, 160)
+  
+  const list = products.value.slice(0, 20)
+  return {
+    title,
+    meta: [
+      { name: 'description', content: desc },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: desc },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: `${_siteUrl}/products` },
+      { name: 'twitter:card', content: 'summary_large_image' },
+    ],
+    // filter/page/sort URL alada index na hoye shob /products-e jay
+    link: [{ rel: 'canonical', href: `${_siteUrl}/products` }],
+    script: [
+      {
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: _siteUrl + '/' },
+            { '@type': 'ListItem', position: 2, name: 'All Products', item: `${_siteUrl}/products` },
+          ],
+        }),
+      },
+      ...(list.length ? [{
+        type: 'application/ld+json',
+        children: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: list.map((p, i) => ({
+            '@type': 'ListItem', position: i + 1,
+            url: `${_siteUrl}/product/${p.slug}`, name: p.name,
+          })),
+        }),
+      }] : []),
+    ],
+  }
+}))
 
 // Server-side first page so crawlers and first paint see the products.
 const { data: ssrProds } = await useAsyncData('all-products', () => api.get('/products', { page: 1 }).catch(() => null))

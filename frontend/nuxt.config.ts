@@ -41,19 +41,33 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
       link: [
-        // Preconnect to Google Fonts for performance
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        // Material Symbols Rounded (icons)
+        {
+          rel: 'preconnect',
+          href: 'https://cdn.adyabd.com',
+          crossorigin: 'anonymous'
+        },
+
+        // Icons: display=block thak (icon-er naam text jeno na dekhay, amader skeleton ache). Non-blocking load.
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block',
+          media: 'print',
+          onload: "this.media='all'",
         },
-        // Hind Siliguri (Bengali body font) + Inter (display/numbers)
+        // Text font: display=swap + non-blocking
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap',
+          media: 'print',
+          onload: "this.media='all'",
         },
+      ],
+      // JS off hole-o font load hoy
+      noscript: [
+        { innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap">' },
+        { innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">' },
       ],
       script: [
         {
