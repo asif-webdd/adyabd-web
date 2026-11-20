@@ -64,6 +64,11 @@ export default defineNuxtConfig({
           onload: "this.media='all'",
         },
       ],
+      // JS off hole-o font load hoy
+      noscript: [
+        //{ innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap">' },
+        //{ innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">' },
+      ],
       script: [
         {
           innerHTML: `(function(){var d=document.documentElement,n=0;
