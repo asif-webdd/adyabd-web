@@ -13,7 +13,7 @@
 
           <NuxtLink to="/" class="flex items-center gap-2 shrink-0">
             <!-- Logo image when set, fallback to text avatar -->
-            <img v-if="branding.shop_logo" :src="branding.shop_logo" :alt="branding.shop_name" class="cus-mobile-logo h-9 sm:h-10 w-auto max-w-[130px] sm:max-w-[200px] object-contain" />
+            <img v-if="branding.shop_logo" :src="logoImageSrc" :srcset="logoImageSrcSet || undefined" sizes="(max-width: 767px) 100px, 200px" :alt="branding.shop_name" class="cus-mobile-logo h-9 sm:h-10 w-auto max-w-[130px] sm:max-w-[200px] object-contain" />
             <template v-else>
               <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
                 <span class="text-white font-display font-bold text-sm">{{ (branding.shop_name_bn || branding.shop_name || 'বা').slice(0,2) }}</span>
@@ -246,7 +246,7 @@
         <div class="grid gap-8" :class="footerGridCols">
           <div>
             <div class="flex items-center gap-2 mb-4">
-              <img v-if="branding.shop_logo" :src="branding.shop_logo" :alt="branding.shop_name" class="h-12 w-auto max-w-[220px] object-contain" />
+              <img v-if="branding.shop_logo" :src="logoImageSrc" :srcset="logoImageSrcSet || undefined" sizes="220px" :alt="branding.shop_name" class="h-12 w-auto max-w-[220px] object-contain" />
               <template v-else>
                 <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
                   <span class="text-white font-display font-bold text-lg">{{ (branding.shop_name_bn || branding.shop_name || 'বা').slice(0,2) }}</span>
@@ -401,6 +401,33 @@ import {useAuth} from '../composables/useAuth.js'
 
 const { colors, typography, branding, footer: footerData, paymentMethods, layout, footerGridCols } = useAppearance()
 const containerWidth = computed(() => layout.value.container_width || 'max-w-7xl')
+
+// Serve the shop logo at display-appropriate widths through Cloudflare Image
+// Resizing. Keep external/already-transformed URLs unchanged.
+const logoImageSrc = computed(() => {
+  const source = branding.value.shop_logo
+  if (!source) return ''
+  try {
+    const url = new URL(source, 'https://cdn.adyabd.com')
+    if (url.hostname !== 'cdn.adyabd.com' || url.pathname.startsWith('/cdn-cgi/image/')) return source
+    return `${url.origin}/cdn-cgi/image/width=220,quality=85,format=auto${url.pathname}${url.search}`
+  } catch {
+    return source
+  }
+})
+
+const logoImageSrcSet = computed(() => {
+  const source = branding.value.shop_logo
+  if (!source) return ''
+  try {
+    const url = new URL(source, 'https://cdn.adyabd.com')
+    if (url.hostname !== 'cdn.adyabd.com' || url.pathname.startsWith('/cdn-cgi/image/')) return ''
+    const path = `${url.pathname}${url.search}`
+    return `${url.origin}/cdn-cgi/image/width=120,quality=85,format=auto${path} 120w, ${url.origin}/cdn-cgi/image/width=220,quality=85,format=auto${path} 220w`
+  } catch {
+    return ''
+  }
+})
 
 const rootStyle = computed(() => ({
   backgroundColor: colors.value.background_color || '#F8FAF9',
