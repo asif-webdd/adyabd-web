@@ -55,6 +55,8 @@
 /* ── Material Symbols ───────────────────────────────────────────────────── */
 .mi {
   font-family: 'Material Symbols Rounded';
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
