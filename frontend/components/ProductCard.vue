@@ -6,16 +6,14 @@
     <div class="relative shrink-0 w-24 h-24 rounded-ap-sm overflow-hidden bg-gray-50">
       
     <img
-      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
-        ? product.image.replace(
-            'https://cdn.adyabd.com/products/',
-            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
-          )
-        : (product.image || '/images/placeholder.svg')"
+      :src="productImageSrc"
+      :srcset="productImageSrcset || undefined"
+      sizes="(max-width: 767px) 184px, 240px"
       @error="$event.target.src='/images/placeholder.svg'"
       :alt="product.name"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
+      decoding="async"
     />
 
       <span v-if="product.discount" class="absolute top-1 left-1 badge bg-accent text-white text-[10px] px-1.5 py-0.5">{{ product.discount }}%</span>
@@ -61,16 +59,14 @@
     <div class="relative overflow-hidden bg-gray-50" style="aspect-ratio:1">
       
     <img
-      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
-        ? product.image.replace(
-            'https://cdn.adyabd.com/products/',
-            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
-          )
-        : (product.image || '/images/placeholder.svg')"
+      :src="productImageSrc"
+      :srcset="productImageSrcset || undefined"
+      sizes="(max-width: 767px) 184px, 240px"
       @error="$event.target.src='/images/placeholder.svg'"
       :alt="product.name"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
+      decoding="async"
     />
 
       <div class="absolute top-1.5 left-1.5 flex flex-col gap-1">
@@ -111,16 +107,14 @@
     <div class="relative overflow-hidden bg-gray-50" style="aspect-ratio:1">
       
     <img
-      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
-        ? product.image.replace(
-            'https://cdn.adyabd.com/products/',
-            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
-          )
-        : (product.image || '/images/placeholder.svg')"
+      :src="productImageSrc"
+      :srcset="productImageSrcset || undefined"
+      sizes="(max-width: 767px) 184px, 240px"
       @error="$event.target.src='/images/placeholder.svg'"
       :alt="product.name"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
+      decoding="async"
     />
 
       <div class="absolute top-2 left-2 flex flex-col gap-1">
@@ -189,16 +183,14 @@
     <div class="relative overflow-hidden bg-gray-50 aspect-square">
       
     <img
-      :src="product.image && product.image.includes('cdn.adyabd.com/products/')
-        ? product.image.replace(
-            'https://cdn.adyabd.com/products/',
-            'https://cdn.adyabd.com/cdn-cgi/image/width=368,height=368,fit=cover,quality=80,format=auto/products/'
-          )
-        : (product.image || '/images/placeholder.svg')"
+      :src="productImageSrc"
+      :srcset="productImageSrcset || undefined"
+      sizes="(max-width: 767px) 184px, 240px"
       @error="$event.target.src='/images/placeholder.svg'"
       :alt="product.name"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
+      decoding="async"
     />
 
       <div class="absolute top-2 left-2 flex flex-col gap-1">
@@ -290,6 +282,27 @@ const wishlistLoading     = ref(false)
 const wishlistJustToggled = ref(false)
 
 const isWishListed = computed(() => wishlistStore.has(props.product.id))
+
+// Responsive Cloudflare variants for product cards.
+// Keep non-CDN and placeholder URLs unchanged.
+const productImageUrl = (width) => {
+  const image = props.product.image
+  if (!image) return '/images/placeholder.svg'
+  if (!image.startsWith('https://cdn.adyabd.com/products/')) return image
+
+  return image.replace(
+    'https://cdn.adyabd.com/products/',
+    `https://cdn.adyabd.com/cdn-cgi/image/width=${width},height=${width},fit=cover,quality=80,format=auto/products/`
+  )
+}
+
+const productImageSrc = computed(() => productImageUrl(368))
+const productImageSrcset = computed(() => {
+  if (!props.product.image?.startsWith('https://cdn.adyabd.com/products/')) return ''
+  return [184, 276, 368]
+    .map(width => `${productImageUrl(width)} ${width}w`)
+    .join(', ')
+})
 
 // ── dataLayer: user clicked through to the product page ────────────────────
 const trackSelect = () => {

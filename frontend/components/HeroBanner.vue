@@ -13,11 +13,15 @@
             <source
               media="(max-width: 767px)"
               :srcset="slide.mobile_image
-                ? slide.mobile_image.replace(
+                ? `${slide.mobile_image.replace(
                     'https://cdn.adyabd.com/banners/',
-                    'https://cdn.adyabd.com/cdn-cgi/image/width=768,quality=80,format=auto/banners/'
-                  )
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=480,height=640,fit=cover,quality=75,format=auto/banners/'
+                  )} 480w, ${slide.mobile_image.replace(
+                    'https://cdn.adyabd.com/banners/',
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=768,height=1024,fit=cover,quality=75,format=auto/banners/'
+                  )} 768w`
                 : ''"
+              sizes="100vw"
             />
 
             <img
@@ -27,6 +31,19 @@
                     'https://cdn.adyabd.com/cdn-cgi/image/width=1920,quality=80,format=auto/banners/'
                   )
                 : ''"
+              :srcset="slide.image
+                ? `${slide.image.replace(
+                    'https://cdn.adyabd.com/banners/',
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=768,quality=80,format=auto/banners/'
+                  )} 768w, ${slide.image.replace(
+                    'https://cdn.adyabd.com/banners/',
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=1280,quality=80,format=auto/banners/'
+                  )} 1280w, ${slide.image.replace(
+                    'https://cdn.adyabd.com/banners/',
+                    'https://cdn.adyabd.com/cdn-cgi/image/width=1920,quality=80,format=auto/banners/'
+                  )} 1920w`
+                : ''"
+              sizes="100vw"
               :alt="slide.title"
               class="w-full h-full object-cover"
               :loading="index === 0 ? 'eager' : 'lazy'"
@@ -213,14 +230,16 @@ watch(
   so the animation always starts fresh from 0.
 */
 @keyframes dot-progress {
-  from { width: 0%; }
-  to   { width: 100%; }
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 .dot-fill {
   position: absolute;
   inset-block: 0;           /* top: 0; bottom: 0 */
   left: 0;
+  width: 100%;
+  transform-origin: left center;
   background: #ffffff;
   border-radius: 999px;
   /* duration is overridden inline per slide */
