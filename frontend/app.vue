@@ -39,9 +39,7 @@ useHead(() => {
   // Defensive trim — guards against stray whitespace in stored settings
   // (e.g. " GTM-XXXX") which would otherwise break the GTM/GA4/Pixel URLs.
   const gtmId      = (t.gtm_id || '').trim()
-  const ga4Id      = (t.ga4_id || '').trim()
-  const gadsId     = (t.gads_id || '').trim()
-  const fbPixelId  = (t.fb_pixel_id || '').trim()
+  //const fbPixelId  = (t.fb_pixel_id || '').trim()
   const tiktokId   = (t.tiktok_pixel_id || '').trim()
 
   const script = []
@@ -66,49 +64,7 @@ useHead(() => {
     })
   }
 
-  // ── Google Analytics 4 / Google Ads (gtag.js, official snippet) ────
-  const gtagId = ga4Id || gadsId || null
-  if (gtagId) {
-    script.push(
-        {
-          key: 'gtag-lib',
-          tagPosition: 'head',
-          src: `https://www.googletagmanager.com/gtag/js?id=${gtagId}`,
-          async: true,
-        },
-        {
-          key: 'gtag-init',
-          tagPosition: 'head',
-          innerHTML:
-              `window.dataLayer=window.dataLayer||[];` +
-              `function gtag(){dataLayer.push(arguments);}` +
-              `gtag('js',new Date());` +
-              `gtag('config',${JSON.stringify(gtagId)});` +
-              (ga4Id && gadsId ? `gtag('config',${JSON.stringify(gadsId)});` : ''),
-        },
-    )
-  }
-
-  // ── Meta (Facebook) Pixel (official snippet) ────────────────────────
-  if (fbPixelId) {
-    script.push({
-      key: 'fb-pixel',
-      tagPosition: 'head',
-      innerHTML:
-          `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?` +
-          `n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;` +
-          `n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;` +
-          `t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,` +
-          `document,'script','https://connect.facebook.net/en_US/fbevents.js');` +
-          `fbq('init',${JSON.stringify(fbPixelId)});` +
-          `fbq('track','PageView');`,
-    })
-    noscript.push({
-      key: 'fb-pixel-noscript',
-      tagPosition: 'bodyOpen',
-      innerHTML: `<img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${fbPixelId}&ev=PageView&noscript=1"/>`,
-    })
-  }
+  
 
   // ── TikTok Pixel (official snippet) ─────────────────────────────────
   if (tiktokId) {
