@@ -17,13 +17,14 @@ useHead(() => ({ htmlAttrs: { lang: _isEn.value ? 'en' : 'bn' } }))
 // ── Fetch appearance from backend, apply CSS vars + dynamic fonts ──
 const appearance = useAppearance()
 
-// Load on server (populates reactive state for SSR HTML)
-// Load again on client mount (gets fresh data, applies CSS vars to DOM)
+// Load appearance in the Nuxt app setup so SSR and client-side appearance
+// effects (CSS variables, fonts, and custom styles) remain available.
 await appearance.load()
-await useLandingPageStore().fetchHome()
-if (import.meta.client) {
-  onMounted(() => appearance.load())
-}
+
+// fetchHome() updates the Pinia store. callOnce prevents the same store action
+// from running again during client hydration after it has already run on SSR.
+const landingPageStore = useLandingPageStore()
+await callOnce('landing-page', () => landingPageStore.fetchHome())
 
 // ── Tracking tags (GTM / GA4 / Meta Pixel / TikTok Pixel / Google Ads) ──
 // Rendered server-side using Google's/Meta's exact official snippet format,
