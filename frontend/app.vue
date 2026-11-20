@@ -14,17 +14,19 @@ useHead(() => ({ htmlAttrs: { lang: _isEn.value ? 'en' : 'bn' } }))
 
 
 
-// ── Fetch appearance from backend, apply CSS vars + dynamic fonts ──
+// ── Fetch independent homepage data in parallel during SSR ──
 const appearance = useAppearance()
-
-// Load appearance in the Nuxt app setup so SSR and client-side appearance
-// effects (CSS variables, fonts, and custom styles) remain available.
-await appearance.load()
-
-// fetchHome() updates the Pinia store. callOnce prevents the same store action
-// from running again during client hydration after it has already run on SSR.
 const landingPageStore = useLandingPageStore()
-await callOnce('landing-page', () => landingPageStore.fetchHome())
+
+// These requests are independent. Parallel loading avoids making the homepage
+// wait for the appearance response before starting the landing-page request.
+// appearance.load() retains its existing error handling and applies all
+// appearance, font, and tracking settings before app setup completes.
+await Promise.all([
+  appearance.load(),
+  // callOnce prevents a duplicate landing-page request during hydration.
+  callOnce('landing-page', () => landingPageStore.fetchHome()),
+])
 
 // ── Tracking tags (GTM / GA4 / Meta Pixel / TikTok Pixel / Google Ads) ──
 // Rendered server-side using Google's/Meta's exact official snippet format,
