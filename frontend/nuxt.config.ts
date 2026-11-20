@@ -70,7 +70,7 @@ export default defineNuxtConfig({
             if (document.fonts && document.fonts.load) {
               document.fonts.load(
                 '400 24px "Material Symbols Rounded"',
-                'shopping_cart'
+                'zoom_in'
               ).then(function() {
                 d.classList.add('icons-ready');
               }).catch(function() {
