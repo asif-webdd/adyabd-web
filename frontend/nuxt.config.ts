@@ -48,14 +48,6 @@ export default defineNuxtConfig({
           href: 'https://cdn.adyabd.com',
           crossorigin: 'anonymous'
         },
-
-        // Icons: display=block thak (icon-er naam text jeno na dekhay, amader skeleton ache). Non-blocking load.
-        {
-          rel: 'stylesheet',
-          //href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap',
-          media: 'print',
-          onload: "this.media='all'",
-        },
         // Text font: display=swap + non-blocking
         {
           rel: 'stylesheet',
