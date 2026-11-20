@@ -32,7 +32,7 @@
     </template>
 
     <!-- ─── Promo Bottom Banners ──────────────────────────── -->
-    <div v-if="hero.show_promo_bottom && promoBottomBanners.length" class="grid gap-4" :class="promoBottomBanners.length === 1 ? 'grid-cols-1' : promoBottomBanners.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'">
+    <div v-if="hero.show_promo_bottom && promoBottomBanners.length" class="grid gap-4 home-deferred-render" :class="promoBottomBanners.length === 1 ? 'grid-cols-1' : promoBottomBanners.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'">
       <NuxtLink v-for="banner in promoBottomBanners" :key="banner.id" :to="banner.link || '#'" class="relative overflow-hidden rounded-2xl group min-h-[120px] md:min-h-[160px]">
         <img :src="banner.mobile_image || banner.image" :alt="banner.title" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 min-h-[120px] md:min-h-[160px]"/>
         <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center px-6">
@@ -46,25 +46,25 @@
     </div>
 
     <!-- ─── Trust Badges ─────────────────────────────────── -->
-    <template v-if="sections.show_trust_badges">
+    <div v-if="sections.show_trust_badges" class="home-deferred-render">
       <SkTrustBadges v-if="pending.trust" />
       <TrustBadges v-else />
-    </template>
+    </div>
 
     <!-- ─── Categories ───────────────────────────────────── -->
-    <template v-if="sections.show_categories">
+    <div v-if="sections.show_categories" class="home-deferred-render">
       <SkCategoryGrid v-if="pending.categories" :count="8" />
       <CategoryGrid v-else />
-    </template>
+    </div>
 
     <!-- ─── Flash Sale ────────────────────────────────────── -->
-    <template v-if="sections.show_flash_sale">
+    <div v-if="sections.show_flash_sale" class="home-deferred-products">
       <SkFlashSale v-if="pending.flashSale" :count="5" />
       <FlashSale v-else-if="flashSaleProducts.length" />
-    </template>
+    </div>
 
     <!-- ─── Featured / Popular Products ─────────────────── -->
-    <section v-if="sections.show_featured">
+    <section v-if="sections.show_featured" class="home-deferred-products">
       <SkProductSection v-if="pending.featured" :count="10" :show-tabs="true" :tab-count="4" :show-more="true" :grid-class="productGridCols"/>
       <div v-else>
         <div class="flex items-center justify-between mb-5">
@@ -90,7 +90,7 @@
     </section>
 
     <!-- ─── Sidebar / Special Offer Banners ──────────────── -->
-    <div v-if="sections.show_sidebar_banners && sidebarBanners.length" class="space-y-3">
+    <div v-if="sections.show_sidebar_banners && sidebarBanners.length" class="space-y-3 home-deferred-render">
       <div class="flex items-center gap-2 mb-1">
         <span class="mi text-primary">local_offer</span>
         <h2 class="section-title">{{ tr(labels.label_special_offers) }}</h2>
@@ -110,7 +110,7 @@
     </div>
 
     <!-- ─── Local Brands CTA Banner ──────────────────────── -->
-    <div v-if="sections.show_local_brands_banner" class="relative overflow-hidden bg-gradient-to-r from-primary to-primary-dark rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-6">
+    <div v-if="sections.show_local_brands_banner" class="home-deferred-render relative overflow-hidden bg-gradient-to-r from-primary to-primary-dark rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-6">
       <img src="/images/placeholder.svg" alt="Bangladesh" class="w-20 h-20 rounded-2xl object-cover border-4 border-white/20 shrink-0"/>
       <div class="flex-1 text-center md:text-left">
         <h3 class="font-display font-extrabold text-2xl mb-1">{{ tr(localBrands.heading) }}</h3>
@@ -122,7 +122,7 @@
     </div>
 
     <!-- ─── New Arrivals ───────────────────────────────────── -->
-    <template v-if="sections.show_new_arrivals">
+    <div v-if="sections.show_new_arrivals" class="home-deferred-products">
       <SkProductSection v-if="pending.newArrivals" :count="10" :show-badge="true" :grid-class="productGridCols"/>
       <section v-else>
         <div class="flex items-center justify-between mb-5">
@@ -138,10 +138,10 @@
           <ProductCard v-for="p in newProducts" :key="p.id" :product="p" />
         </div>
       </section>
-    </template>
+    </div>
 
     <!-- ─── Trending ──────────────────────────────────────── -->
-    <template v-if="sections.show_trending">
+    <div v-if="sections.show_trending" class="home-deferred-products">
       <SkProductSection v-if="pending.trending" :count="10" :show-badge="true" :grid-class="productGridCols"/>
       <section v-else>
         <div class="flex items-center justify-between mb-5">
@@ -157,10 +157,10 @@
           <ProductCard v-for="p in trendingProducts" :key="p.id" :product="p" />
         </div>
       </section>
-    </template>
+    </div>
 
     <!-- ─── Payment Methods ───────────────────────────────── -->
-    <div v-if="sections.show_payment_methods" class="cus-payment-menthods-sec bg-white rounded-2xl p-6 shadow-card">
+    <div v-if="sections.show_payment_methods" class="home-deferred-render cus-payment-menthods-sec bg-white rounded-2xl p-6 shadow-card">
       <h3 class="font-display font-bold text-lg text-center text-gray-800 mb-5 flex items-center justify-center gap-2">
         <span class="mi text-primary">payments</span> {{ tr(paymentMethods.strip_heading) }}
       </h3>
@@ -173,7 +173,7 @@
     </div>
 
     <!-- ─── App Download ───────────────────────────────────── -->
-    <div v-if="sections.show_app_download" class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-8">
+    <div v-if="sections.show_app_download" class="home-deferred-render bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 text-white flex flex-col md:flex-row items-center gap-8">
       <img :src="appDownload.image || '/images/placeholder.svg'" alt="App" class="w-32 h-32 rounded-2xl object-cover border-4 border-white/10 shrink-0"/>
       <div class="flex-1 text-center md:text-left">
         <h3 class="font-display font-extrabold text-2xl mb-2 flex items-center gap-2">
@@ -220,6 +220,17 @@
 </template>
 
 <style scoped>
+/* Let the browser skip off-screen homepage rendering until a section approaches the viewport. */
+.home-deferred-render {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 420px;
+}
+
+.home-deferred-products {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
+}
+
 .cus-hero-slider{
   margin-top: 0px !important;
 }
@@ -244,7 +255,6 @@
 
 <script setup>
 const { tr } = useLang()
-import { useProductsStore }    from '~/stores/products'
 import { useLandingPageStore } from '~/stores/LandingPage'
 
 import SkHeroBanner     from '~/components/Skeletons/Skherobanner.vue'
@@ -297,7 +307,6 @@ useHead(() => {
   }
 })
 
-const store        = useProductsStore()
 const landingStore = useLandingPageStore()
 
 // ─── Appearance ────────────────────────────────────────────────────────────
@@ -380,7 +389,6 @@ const tabLoading  = computed(() => activeTab.value !== 'all' && (_tabCache[activ
 const tabProducts = computed(() => activeTab.value === 'all' ? landingStore.featured : (_tabCache[activeTab.value]?.items || []))
 const seeMoreLink = computed(() => activeTab.value === 'all' ? '/products' : `/category/${activeTab.value}`)
 
-const featuredProducts  = computed(() => landingStore.featured)
 const newProducts       = computed(() => landingStore.newArrivals)
 const trendingProducts  = computed(() => landingStore.trending)
 const flashSaleProducts = computed(() => landingStore.flashSale)
