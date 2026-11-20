@@ -62,16 +62,27 @@ export default defineNuxtConfig({
         //{ innerHTML: '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">' },
       ],
       script: [
+        
         {
-          innerHTML: `(function(){var d=document.documentElement,n=0;
-function ok(){var s=document.createElement('span');s.textContent='shopping_cart';
-s.style.cssText="position:absolute;visibility:hidden;white-space:nowrap;font-size:24px;font-family:'Material Symbols Rounded'";
-document.body.appendChild(s);var w=s.offsetWidth;document.body.removeChild(s);return w<60}
-function tick(){if(!document.body){return setTimeout(tick,30)}
-if(ok()||++n>200){d.classList.add('icons-ready')}else{setTimeout(tick,50)}}
-tick()})()`,
+          innerHTML: `(function(){
+            var d = document.documentElement;
+
+            if (document.fonts && document.fonts.load) {
+              document.fonts.load(
+                '400 24px "Material Symbols Rounded"',
+                'shopping_cart'
+              ).then(function() {
+                d.classList.add('icons-ready');
+              }).catch(function() {
+                d.classList.add('icons-ready');
+              });
+            } else {
+              d.classList.add('icons-ready');
+            }
+          })();`,
           tagPosition: 'head',
         },
+
       ],
     },
   },
