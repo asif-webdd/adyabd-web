@@ -151,6 +151,17 @@ class AppearanceController extends Controller
             'app_banner_image'   => $s('app_banner_image',   ''),
         ];
 
+        // ── Home image banner (above footer) ──────────────────────────────────
+        $homeBanner = [
+            'enabled'  => $b('home_banner_enabled'),
+            'image'    => $fileUrl('home_banner_image'),
+            'link'     => $s('home_banner_link', ''),
+            'width'    => $s('home_banner_width', '100%') ?: '100%',
+            'height'   => $s('home_banner_height', ''),
+            'fit'      => $s('home_banner_fit', 'cover') ?: 'cover',
+            'position' => $s('home_banner_position', 'center') ?: 'center',
+        ];
+
         // ── Payment methods ───────────────────────────────────────────────────
         $paymentMethods = [
             'payment_strip_heading'   => $s('payment_strip_heading',   'We Accept'),
@@ -249,6 +260,7 @@ class AppearanceController extends Controller
             $popup,
             $custom,
             ['tracking' => $tracking],
+            ['home_banner' => $homeBanner],
             ['fonts_url' => $fontsUrl]
         ));
     }

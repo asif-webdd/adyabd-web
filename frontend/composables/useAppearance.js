@@ -132,6 +132,10 @@ export const useAppearance = () => {
         image: null,
     }))
 
+    const homeBanner = useState('ap:homeBanner', () => ({
+        enabled: true, image: null, link: '', width: '100%', height: '', fit: 'cover', position: 'center',
+    }))
+
     const paymentMethods = useState('ap:payments', () => ({
         strip_heading: 'আমরা গ্রহণ করি',
         show_bkash: true,
@@ -310,6 +314,15 @@ export const useAppearance = () => {
             app_store_url: data.app_store_url ?? '',
             play_store_url: data.play_store_url ?? '',
             image: data.app_banner_image ?? null,
+        }
+        homeBanner.value = {
+            enabled: data.home_banner?.enabled ?? true,
+            image: data.home_banner?.image || null,
+            link: data.home_banner?.link || '',
+            width: data.home_banner?.width || '100%',
+            height: data.home_banner?.height || '',
+            fit: data.home_banner?.fit || 'cover',
+            position: data.home_banner?.position || 'center',
         }
         paymentMethods.value = {
             strip_heading: data.payment_strip_heading ?? 'আমরা গ্রহণ করি',
@@ -619,7 +632,7 @@ export const useAppearance = () => {
         colors, typography, branding, layout,
         hero, sections, labels,
         announcement, trustBadges,
-        localBrands, appDownload, paymentMethods,
+        localBrands, appDownload, paymentMethods, homeBanner,
         footer, popup,
         tracking,
         // grid helpers

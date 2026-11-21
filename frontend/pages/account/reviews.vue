@@ -65,10 +65,10 @@
         <div class="flex items-center gap-3 mb-4">
           <label class="flex items-center gap-2 border-2 border-dashed border-gray-200 rounded-xl px-4 py-2 text-sm font-bengali text-gray-500 hover:border-primary hover:text-primary transition-colors cursor-pointer">
             <span class="mi mi-sm">add_photo_alternate</span>{{ tr('ছবি যোগ করুন') }}
-            <input type="file" accept="image/*" multiple class="hidden" @change="(e) => item._images = Array.from(e.target.files)"/>
+            <input type="file" accept="image/*" multiple class="hidden" @change="(e) => item._images = Array.from(e.target.files).slice(0, 3)"/>
           </label>
           <span v-if="item._images?.length" class="text-xs font-bengali text-green-600">{{ item._images.length }}টি ছবি নির্বাচিত</span>
-          <span v-else class="text-xs font-bengali text-gray-400">{{ tr('সর্বোচ্চ ৫টি ছবি') }}</span>
+          <span v-else class="text-xs font-bengali text-gray-400">{{ tr('সর্বোচ্চ ৩টি ছবি') }}</span>
         </div>
 
         <div v-if="item._error" class="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-bengali mb-3">{{ item._error }}</div>
@@ -109,7 +109,7 @@
 
             <!-- Review images -->
             <div v-if="review.images?.length" class="flex gap-2 mb-3 flex-wrap">
-              <img v-for="img in review.images" :key="img" :src="img" class="w-16 h-16 object-cover rounded-xl"/>
+              <img v-for="img in review.images" :key="img" :src="img" class="w-[50px] h-[50px] object-cover rounded-lg"/>
             </div>
 
             <!-- Seller Reply -->
