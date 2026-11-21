@@ -152,12 +152,23 @@ class AppearanceController extends Controller
         ];
 
         // ── Home image banner (above footer) ──────────────────────────────────
+        // "400" / "400 " -> "400px" (a bare number is invalid CSS and was silently ignored)
+        $cssLen = function (string $v, string $default = ''): string {
+            $v = trim($v);
+            if ($v === '') return $default;
+            if (preg_match('/^\d+(\.\d+)?$/', $v)) return $v . 'px';
+            return strtolower($v) === 'auto' ? 'auto' : $v;
+        };
         $homeBanner = [
             'enabled'  => $b('home_banner_enabled'),
             'image'    => $fileUrl('home_banner_image'),
             'link'     => $s('home_banner_link', ''),
-            'width'    => $s('home_banner_width', '100%') ?: '100%',
-            'height'   => $s('home_banner_height', ''),
+            'width'         => $cssLen($s('home_banner_width', '100%'), '100%'),
+            'width_tablet'  => $cssLen($s('home_banner_width_tablet', '')),
+            'width_mobile'  => $cssLen($s('home_banner_width_mobile', '')),
+            'height'        => $cssLen($s('home_banner_height', '')),
+            'height_tablet' => $cssLen($s('home_banner_height_tablet', '')),
+            'height_mobile' => $cssLen($s('home_banner_height_mobile', '')),
             'fit'      => $s('home_banner_fit', 'cover') ?: 'cover',
             'position' => $s('home_banner_position', 'center') ?: 'center',
         ];
