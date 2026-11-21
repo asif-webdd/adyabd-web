@@ -613,7 +613,7 @@ class AppearancePage extends Page
                                 ->helperText('Default 100% (full width). Examples: 100%, 1200px, 80%. Recommended image width: 1920 px.'),
 
                             TextInput::make('home_banner_height')->label('Height')
-                                ->placeholder('auto')
+                                ->placeholder('auto (e.g. 400px)')
                                 ->live(onBlur: true)
                                 ->helperText('Leave blank = auto (image keeps its own ratio). Examples: 400px, 50vh. Recommended: 400–600 px for a 1920 px wide image.'),
 

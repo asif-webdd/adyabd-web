@@ -1,6 +1,6 @@
 <template>
   <section v-if="homeBanner.enabled" class="mt-12 flex justify-center">
-    <component :is="homeBanner.link ? linkTag : 'div'" v-bind="linkAttrs" :style="{ width: homeBanner.width || '100%', maxWidth: '100%' }" class="block">
+    <component :is="homeBanner.link ? linkTag : 'div'" v-bind="linkAttrs" :style="{ width: cssLen(homeBanner.width) || '100%', maxWidth: '100%' }" class="block">
       <img :src="homeBanner.image || '/images/home-banner-placeholder.svg'" alt="" loading="lazy" decoding="async"
            class="block w-full" :style="imgStyle"/>
     </component>
@@ -14,8 +14,9 @@ const linkTag = computed(() => isExternal.value ? 'a' : resolveComponent('NuxtLi
 const linkAttrs = computed(() => !homeBanner.value.link ? {} : isExternal.value
   ? { href: homeBanner.value.link, target: '_blank', rel: 'noopener' }
   : { to: homeBanner.value.link })
+const cssLen = (v) => { v = String(v || '').trim(); return /^\d+(\.\d+)?$/.test(v) ? v + 'px' : v }
 const imgStyle = computed(() => {
-  const h = (homeBanner.value.height || '').trim()
+  const h = cssLen(homeBanner.value.height)
   if (!h || h === 'auto') return { height: 'auto' }
   return { height: h, objectFit: homeBanner.value.fit, objectPosition: homeBanner.value.position }
 })
