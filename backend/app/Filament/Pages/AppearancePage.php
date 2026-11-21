@@ -608,26 +608,40 @@ class AppearancePage extends Page
                                 ->placeholder('https://… or /category/shoes')
                                 ->helperText('Clicking the image opens this link. Leave blank for no link.'),
 
-                            TextInput::make('home_banner_width')->label('Width')
+                            TextInput::make('home_banner_width')->label('Width — Desktop (1024px+)')
                                 ->placeholder('100%')->default('100%')
                                 ->helperText('Default 100% (full width). Examples: 100%, 1200px, 80%. Recommended image width: 1920 px.'),
+                            TextInput::make('home_banner_width_tablet')->label('Width — Tablet (768–1023px)')
+                                ->placeholder('same as desktop')
+                                ->helperText('Leave blank to use the desktop width. Recommended image width: 1200 px.'),
+                            TextInput::make('home_banner_width_mobile')->label('Width — Mobile (below 768px)')
+                                ->placeholder('same as tablet')
+                                ->helperText('Leave blank to use the tablet/desktop width. Usually 100%. Recommended image width: 800 px.'),
 
-                            TextInput::make('home_banner_height')->label('Height')
+                            TextInput::make('home_banner_height')->label('Height — Desktop')
                                 ->placeholder('auto (e.g. 400px)')
                                 ->live(onBlur: true)
-                                ->helperText('Leave blank = auto (image keeps its own ratio). Examples: 400px, 50vh. Recommended: 400–600 px for a 1920 px wide image.'),
+                                ->helperText('Blank = auto (image keeps its own ratio). A plain number means px (400 = 400px). Recommended: 400–600 px.'),
+                            TextInput::make('home_banner_height_tablet')->label('Height — Tablet')
+                                ->placeholder('same as desktop')
+                                ->live(onBlur: true)
+                                ->helperText('Blank = use desktop height. Recommended: 300–450 px.'),
+                            TextInput::make('home_banner_height_mobile')->label('Height — Mobile')
+                                ->placeholder('same as tablet')
+                                ->live(onBlur: true)
+                                ->helperText('Blank = use tablet/desktop height. Recommended: 180–300 px.'),
 
                             Select::make('home_banner_fit')->label('Object fit')
                                 ->options(['cover' => 'Cover (fill, crop extra)', 'contain' => 'Contain (show whole image)', 'fill' => 'Fill (stretch)', 'none' => 'None', 'scale-down' => 'Scale down'])
                                 ->default('cover')
-                                ->visible(fn (Get $get) => filled($get('home_banner_height')))
+                                ->visible(fn (Get $get) => filled($get('home_banner_height')) || filled($get('home_banner_height_tablet')) || filled($get('home_banner_height_mobile')))
                                 ->helperText('How the image fits inside the set height.'),
 
                             Select::make('home_banner_position')->label('Object / background position')
                                 ->options(['center' => 'Center', 'top' => 'Top', 'bottom' => 'Bottom', 'left' => 'Left', 'right' => 'Right',
                                     'left top' => 'Left top', 'right top' => 'Right top', 'left bottom' => 'Left bottom', 'right bottom' => 'Right bottom'])
                                 ->default('center')
-                                ->visible(fn (Get $get) => filled($get('home_banner_height')))
+                                ->visible(fn (Get $get) => filled($get('home_banner_height')) || filled($get('home_banner_height_tablet')) || filled($get('home_banner_height_mobile')))
                                 ->helperText('Which part of the image stays visible when it is cropped.'),
                         ])->columns(2),
                 ]),

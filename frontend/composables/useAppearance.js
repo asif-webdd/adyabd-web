@@ -133,7 +133,7 @@ export const useAppearance = () => {
     }))
 
     const homeBanner = useState('ap:homeBanner', () => ({
-        enabled: true, image: null, link: '', width: '100%', height: '', fit: 'cover', position: 'center',
+        enabled: true, image: null, link: '', width: '100%', width_tablet: '', width_mobile: '', height: '', height_tablet: '', height_mobile: '', fit: 'cover', position: 'center',
     }))
 
     const paymentMethods = useState('ap:payments', () => ({
@@ -320,7 +320,11 @@ export const useAppearance = () => {
             image: data.home_banner?.image || null,
             link: data.home_banner?.link || '',
             width: data.home_banner?.width || '100%',
+            width_tablet: data.home_banner?.width_tablet || '',
+            width_mobile: data.home_banner?.width_mobile || '',
             height: data.home_banner?.height || '',
+            height_tablet: data.home_banner?.height_tablet || '',
+            height_mobile: data.home_banner?.height_mobile || '',
             fit: data.home_banner?.fit || 'cover',
             position: data.home_banner?.position || 'center',
         }
