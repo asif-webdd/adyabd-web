@@ -72,7 +72,8 @@ class ReviewController extends Controller
             'order_item_id' => 'nullable|exists:order_items,id', //  keep consistent
             'rating'        => 'required|integer|min:1|max:5',
             'comment'       => 'required|string|min:5|max:2000',
-            'images.*'      => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'images'        => 'sometimes|array|max:3',
+            'images.*'      => 'image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
         if (!setting('enable_reviews', true)) {
             return $this->error('Reviews are currently disabled.', Response::HTTP_FORBIDDEN);

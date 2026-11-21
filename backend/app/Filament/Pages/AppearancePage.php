@@ -593,6 +593,45 @@ class AppearancePage extends Page
                 ]),
 
                 // ── 11. Footer ─────────────────────────────────────────────────
+                // ── Home Image Banner (above footer) ─────────────────────────
+                Tabs\Tab::make('Home Image Banner')->icon('heroicon-o-photo')->schema([
+                    Section::make('Image section above the footer (Homepage)')
+                        ->description('A single full-width image shown on the homepage just above the footer. Leave image empty to show the placeholder.')
+                        ->schema([
+                            Toggle::make('home_banner_enabled')->label('Show this section')->default(true),
+
+                            FileUpload::make('home_banner_image')->disk('public')
+                                ->label('Image')->image()->directory('settings')
+                                ->helperText('Recommended: 1920 × 600 px (JPG/WebP, under 300 KB). Mobile will scale it down automatically.'),
+
+                            TextInput::make('home_banner_link')->label('Link (optional)')
+                                ->placeholder('https://… or /category/shoes')
+                                ->helperText('Clicking the image opens this link. Leave blank for no link.'),
+
+                            TextInput::make('home_banner_width')->label('Width')
+                                ->placeholder('100%')->default('100%')
+                                ->helperText('Default 100% (full width). Examples: 100%, 1200px, 80%. Recommended image width: 1920 px.'),
+
+                            TextInput::make('home_banner_height')->label('Height')
+                                ->placeholder('auto')
+                                ->live(onBlur: true)
+                                ->helperText('Leave blank = auto (image keeps its own ratio). Examples: 400px, 50vh. Recommended: 400–600 px for a 1920 px wide image.'),
+
+                            Select::make('home_banner_fit')->label('Object fit')
+                                ->options(['cover' => 'Cover (fill, crop extra)', 'contain' => 'Contain (show whole image)', 'fill' => 'Fill (stretch)', 'none' => 'None', 'scale-down' => 'Scale down'])
+                                ->default('cover')
+                                ->visible(fn (Get $get) => filled($get('home_banner_height')))
+                                ->helperText('How the image fits inside the set height.'),
+
+                            Select::make('home_banner_position')->label('Object / background position')
+                                ->options(['center' => 'Center', 'top' => 'Top', 'bottom' => 'Bottom', 'left' => 'Left', 'right' => 'Right',
+                                    'left top' => 'Left top', 'right top' => 'Right top', 'left bottom' => 'Left bottom', 'right bottom' => 'Right bottom'])
+                                ->default('center')
+                                ->visible(fn (Get $get) => filled($get('home_banner_height')))
+                                ->helperText('Which part of the image stays visible when it is cropped.'),
+                        ])->columns(2),
+                ]),
+
                 Tabs\Tab::make('Footer')->icon('heroicon-o-document-minus')->schema([
 
                     Section::make('Footer Content')

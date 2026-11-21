@@ -240,6 +240,9 @@
       <slot/>
     </main>
 
+    <!-- Home image banner (above footer, homepage only) -->
+    <HomeImageBanner v-if="route.path === '/'" />
+
     <!-- Footer -->
     <footer class="text-gray-300" :style="{ backgroundColor: colors.footer_color || '#1a1a2e' }">
       <div :class="[containerWidth, 'mx-auto px-4 py-12']">

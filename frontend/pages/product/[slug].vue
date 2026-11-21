@@ -532,14 +532,7 @@
                     <!-- Review body -->
                     <p class="font-bengali text-gray-700 text-sm leading-relaxed">{{ rev.review }}</p>
                     <!-- Review images -->
-                    <div v-if="rev.images?.length" class="flex gap-2 mt-2 flex-wrap">
-                      <img
-                          v-for="img in rev.images"
-                          :key="img"
-                          :src="img"
-                          class="w-16 h-16 object-cover rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
-                      />
-                    </div>
+                    <ReviewImages v-if="rev.images?.length" :review="rev" :product="product" />
                     <!-- Badges row -->
                     <div class="flex gap-2 mt-2 flex-wrap">
                       <span v-if="rev.order_id"
@@ -619,7 +612,7 @@
                 <!-- Image upload -->
                 <div class="mb-4">
                   <p class="font-bengali text-sm text-gray-600 mb-2 font-semibold flex items-center gap-1">
-                    <span class="mi mi-sm">photo_camera</span>{{ tr('ছবি যোগ করুন (ঐচ্ছিক, সর্বোচ্চ ৫টি)') }}
+                    <span class="mi mi-sm">photo_camera</span>{{ tr('ছবি যোগ করুন (ঐচ্ছিক, সর্বোচ্চ ৩টি)') }}
                   </p>
                   <div
                       class="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center cursor-pointer hover:border-primary transition-colors"
@@ -648,7 +641,7 @@
                       </span>
                     </div>
                     <button
-                        v-if="selectedImages.length < 5"
+                        v-if="selectedImages.length < 3"
                         @click="$refs.imageInput.click()"
                         class="w-20 h-20 rounded-xl border-2 border-dashed border-gray-200 hover:border-primary transition-colors flex flex-col items-center justify-center gap-1"
                     >
@@ -1130,7 +1123,7 @@ const imageInput = ref(null)
 const selectedImages = ref([])
 const imageErrors = ref([])
 const isDragging = ref(false)
-const MAX_IMAGES = 5
+const MAX_IMAGES = 3
 const MAX_SIZE_BYTES = 2 * 1024 * 1024
 
 const validateAndAddImages = (files) => {
