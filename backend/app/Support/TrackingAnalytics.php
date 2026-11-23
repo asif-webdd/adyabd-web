@@ -148,14 +148,21 @@ class TrackingAnalytics
         [$start, $end] = self::resolve($range, $from, $until);
         $gran = self::granularity($start, $end);
 
+        // চার্ট সবসময় তারিখ-ভিত্তিক। Today/Yesterday-তে একটাই বার হতো, তাই চার্টে শেষ ৭ দিন দেখাই
+        // (কার্ড/টোটাল নির্বাচিত রেঞ্জেরই থাকে)।
+        $chartStart = $start;
+        if ($start->startOfDay()->diffInDays($end->startOfDay()) < 6) {
+            $chartStart = $end->startOfDay()->subDays(6);
+        }
+
         $bucketSql = self::bucketSql($gran);
-        $rows = self::query($start, $end)
-            ->toBase()
-            ->selectRaw("{$bucketSql} as bucket, event_name, COUNT(*) as c, "
-                . "SUM(CASE WHEN event_name = 'Purchase' THEN COALESCE(value, 0) ELSE 0 END) as v, "
-                . "SUM(CASE WHEN has_error = 1 THEN 1 ELSE 0 END) as f")
-            ->groupByRaw('bucket, event_name')
-            ->get();
+        $selectSql = "{$bucketSql} as bucket, event_name, COUNT(*) as c, "
+            . "SUM(CASE WHEN event_name = 'Purchase' THEN COALESCE(value, 0) ELSE 0 END) as v, "
+            . "SUM(CASE WHEN has_error = 1 THEN 1 ELSE 0 END) as f";
+        $rows = self::query($start, $end)->toBase()->selectRaw($selectSql)->groupByRaw('bucket, event_name')->get();
+        $chartRows = $chartStart->equalTo($start)
+            ? $rows
+            : self::query($chartStart, $end)->toBase()->selectRaw($selectSql)->groupByRaw('bucket, event_name')->get();
 
         // event => [count, value] এবং bucket => event => [count, value]
         $events = [];
@@ -164,24 +171,31 @@ class TrackingAnalytics
             $name = (string) $r->event_name;
             $events[$name]['count'] = ($events[$name]['count'] ?? 0) + (int) $r->c;
             $events[$name]['value'] = ($events[$name]['value'] ?? 0) + (float) $r->v;
-            $grid[$r->bucket][$name] = ['c' => (int) $r->c, 'v' => (float) $r->v, 'f' => (int) $r->f];
+        }
+        $grid = [];
+        foreach ($chartRows as $r) {
+            $grid[$r->bucket][(string) $r->event_name] = ['c' => (int) $r->c, 'v' => (float) $r->v, 'f' => (int) $r->f];
         }
         uasort($events, fn ($a, $b) => $b['count'] <=> $a['count']);
 
         // চার্টের স্ট্যাক: ফানেলের ইভেন্ট যেগুলোর ডেটা আছে + বাকি সব "Other"
+        $chartEvents = [];
+        foreach ($chartRows as $r) {
+            $chartEvents[(string) $r->event_name] = true;
+        }
         $stackKeys = [];
         foreach (self::FUNNEL as $name) {
-            if (isset($events[$name])) {
+            if (isset($chartEvents[$name])) {
                 $stackKeys[] = $name;
             }
         }
-        $hasOther = count(array_diff(array_keys($events), self::FUNNEL)) > 0;
+        $hasOther = count(array_diff(array_keys($chartEvents), self::FUNNEL)) > 0;
         if ($hasOther) {
             $stackKeys[] = 'Other';
         }
 
         $buckets = [];
-        foreach (self::bucketList($start, $end, $gran) as $key => $lab) {
+        foreach (self::bucketList($chartStart, $end, $gran) as $key => $lab) {
             $by = array_fill_keys($stackKeys, 0);
             $value = 0.0;
             $total = 0;
@@ -339,7 +353,7 @@ class TrackingAnalytics
     {
         $days = (int) $start->startOfDay()->diffInDays($end->startOfDay()) + 1;
 
-        return $days <= 2 ? 'hour' : ($days <= 92 ? 'day' : 'month');
+        return $days <= 92 ? 'day' : 'month';   // ঘণ্টা-ভিত্তিক নয়, সবসময় তারিখ-ভিত্তিক
     }
 
     /** অ্যাপ টাইমজোন থেকে Asia/Dhaka-তে সরানোর মিনিট (UTC → +360) */
