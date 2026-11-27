@@ -1,6 +1,6 @@
 <template>
   <div class="cus-4-points grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div v-for="badge in trustBadges" :key="badge.title" class="cus-4-point bg-white rounded-2xl p-4 shadow-card flex items-center gap-3">
+    <div v-for="badge in trustBadges" :key="badge.title" class="cus-4-point rounded-2xl p-4 shadow-card flex items-center gap-3">
       <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" :class="badge.bg">
         <span class="mi text-2xl" :class="badge.color">{{ badge.icon }}</span>
       </div>
@@ -17,6 +17,18 @@ const { trustBadges } = useAppearance()
 </script>
 
 <style scoped>
+.cus-4-point:first-child {
+    background: rgb(0 163 120 / 10%);
+}
+.cus-4-point:nth-child(2) {
+    background: rgb(37 99 235 / 11%);
+}
+.cus-4-point:nth-child(3) {
+    background: rgb(234 88 12 / 11%);
+}
+.cus-4-point:nth-child(4) {
+    background: rgb(202 138 4 / 13%);
+}
 @media screen and (max-width: 767px){
   .cus-4-points{
     gap: 8px;
